@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows;
-using FileEditor.Interface;
 
-namespace FileRenamer.Interface
+namespace RenamerApp
 {
     static class Program
     {

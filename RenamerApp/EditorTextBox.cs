@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using Gu.Wpf.Adorners;
 
-namespace FileRenamer.Interface
+namespace RenamerApp
 {
     class EditorTextBox : TextBox
     {

@@ -2,9 +2,8 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using FileRenamer.Interface;
 
-namespace FileEditor.Interface
+namespace RenamerApp
 {
     class EditorWindow : Window
     {

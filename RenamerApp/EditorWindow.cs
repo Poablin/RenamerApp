@@ -34,37 +34,38 @@ namespace RenamerApp
         }
         private void StartOperation(object sender, RoutedEventArgs e)
         {
-            string directory = directoryInputBox.Text;
-            string outputDirectory = outputDirectoryInputBox.Text;
-
-            string[] filePaths = Directory.GetFiles(directory);
-           
-            informationList.Items.Clear();
-
-            foreach (string file in filePaths)
+            try
             {
-                try
+                informationList.Items.Clear();
+                string directory = directoryInputBox.Text;
+                string outputDirectory = outputDirectoryInputBox.Text;
+                string[] filePaths = Directory.GetFiles(directory);
+                foreach (string file in filePaths)
                 {
-                    string dire = Path.GetDirectoryName(file);
-                    string name = Path.GetFileNameWithoutExtension(file);
-                    string exte = Path.GetExtension(file);
-                    //Under kan endres hva som skjer med navnet
-                    //name = name.Substring(6);
-                    //name = name.Replace("_", " ");
-                    //name = name.Replace("  ", " ");
-                    if (upperCaseCheckBox.IsChecked == true)
+                    try
                     {
-                        name = name.Substring(0, 1).ToUpper() + name.Substring(1);
+                        string dire = Path.GetDirectoryName(file);
+                        string name = Path.GetFileNameWithoutExtension(file);
+                        string exte = Path.GetExtension(file);
+                        //Under kan endres hva som skjer med navnet
+                        //name = name.Substring(6);
+                        //name = name.Replace("_", " ");
+                        //name = name.Replace("  ", " ");
+                        if (upperCaseCheckBox.IsChecked == true) name = name.Substring(0, 1).ToUpper() + name[1..];
+                        //Her bestemmer man hvor det skal outputtes til
+                        informationList.Items.Add("Copying file for: " + name);
+                        File.Copy($"{file}", $"{outputDirectory}\\{name}{exte}");
                     }
-                    //Her bestemmer man hvor det skal outputtes til
-                    informationList.Items.Add("Copying file for: " + name);
-                    File.Copy($"{file}", $"{outputDirectory}\\{name}{exte}");
-                }
-                catch (Exception)
-                {
-                    informationList.Items.Add("Error copying file");
+                    catch (Exception)
+                    {
+                        informationList.Items.Add("Error copying file");
+                    }
                 }
             }
+            catch (Exception ex) when (ex is ArgumentException || ex is DirectoryNotFoundException)
+            {
+                informationList.Items.Add("Path not found");
+            } 
         }
     }
 }

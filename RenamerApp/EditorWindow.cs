@@ -73,10 +73,10 @@ namespace RenamerApp
                     if (CopyCheckBox.IsChecked == true)
                     {
                         InformationList.Items.Add($"Started copying: {name}{exte}");
-                       await Task.Run(() => File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));
-                       InformationList.Items.Add($"Renamed \"{oldn}\" to \"{name}{exte}\" {(outputDirectory == "" ? "" : $"and copied file to {outputDirectory}")}");
+                        await Task.Run(() => File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));
+                        InformationList.Items.Add($"Renamed \"{oldn}\" to \"{name}{exte}\" {(outputDirectory == "" ? "" : $"and copied file to {outputDirectory}")}");
                     }
-                    else 
+                    else
                     {
                         InformationList.Items.Add($"Started moving: {name}{exte}");
                         await Task.Run(() => File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));

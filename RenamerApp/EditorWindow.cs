@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Threading.Tasks;
 
 namespace RenamerApp
 {
@@ -13,7 +15,8 @@ namespace RenamerApp
         private CheckBox CopyCheckBox { get; }
         private CheckBox UpperCaseCheckBox { get; }
         private CheckBox TrimCheckBox { get; }
-        private EditorButton SelectButton { get; }
+        private EditorButton SelectFilesButton { get; }
+        private EditorButton SelectOutputButton { get; }
         private string[] FilePaths { get; set; }
 
         public EditorWindow()
@@ -25,9 +28,11 @@ namespace RenamerApp
             UpperCaseCheckBox = new EditorCheckBox(200, 20, 350, 40, "Uppercase");
             TrimCheckBox = new EditorCheckBox(200, 20, 350, 70, "Trim");
             var startButton = new EditorButton(0, 0, "Start");
-            SelectButton = new EditorButton(0, 50, "Select");
+            SelectFilesButton = new EditorButton(0, 50, "Select");
+            SelectOutputButton = new EditorButton(50, 50, "Output");
             startButton.Click += StartOperation;
-            SelectButton.Click += SelectFiles;
+            SelectFilesButton.Click += SelectFiles;
+            SelectOutputButton.Click += SelectFolder;
 
             grid.Children.Add(InformationList);
             grid.Children.Add(CopyCheckBox);
@@ -35,17 +40,19 @@ namespace RenamerApp
             grid.Children.Add(TrimCheckBox);
             grid.Children.Add(OutputDirectoryInputBox);
             grid.Children.Add(startButton);
-            grid.Children.Add(SelectButton);
+            grid.Children.Add(SelectFilesButton);
+            grid.Children.Add(SelectOutputButton);
 
             Content = grid;
         }
-        private void StartOperation(object sender, RoutedEventArgs e)
+        private async void StartOperation(object sender, RoutedEventArgs e)
         {
             InformationList.Items.Clear();
+            InformationList.Items.Add("Started operation... please wait");
             string outputDirectory = OutputDirectoryInputBox.Text;
             if (FilePaths == null)
             {
-                InformationList.Items.Add("No files found");
+                InformationList.Items.Add("No files selected");
                 return;
             }
             try
@@ -65,12 +72,12 @@ namespace RenamerApp
                     //Her bestemmer man hvor det skal outputtes til
                     if (CopyCheckBox.IsChecked == true)
                     {
-                        File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}");
-                        InformationList.Items.Add($"Renamed \"{oldn}\" to \"{name}{exte}\" {(outputDirectory == "" ? "" : $"and copied file to {outputDirectory}")}");
+                       await Task.Run(() => File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));
+                       InformationList.Items.Add($"Renamed \"{oldn}\" to \"{name}{exte}\" {(outputDirectory == "" ? "" : $"and copied file to {outputDirectory}")}");
                     }
                     else 
-                    { 
-                        File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}");
+                    {
+                        await Task.Run(() => File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));
                         InformationList.Items.Add($"Renamed \"{oldn}\" to \"{name}{exte}\" {(outputDirectory == "" ? "" : $"and moved file to {outputDirectory}")}");
                     }
                 }
@@ -79,19 +86,26 @@ namespace RenamerApp
             {
                 InformationList.Items.Add(ex);
             }
-            finally { FilePaths = null; SelectButton.Content = "Select"; }
+            finally { FilePaths = null; SelectFilesButton.Content = "Select"; InformationList.Items.Add("Operation finished!"); }
 
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-
             if (openFileDialog.ShowDialog() == true)
             {
                 FilePaths = openFileDialog.FileNames;
-                SelectButton.Content = $"Select ({FilePaths.Length})";
+                SelectFilesButton.Content = $"Select ({FilePaths.Length})";
             }
+        }
+        private void SelectFolder(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            CommonFileDialogResult result = dialog.ShowDialog();
+            if (result != CommonFileDialogResult.Ok) return;
+            OutputDirectoryInputBox.Text = dialog.FileName;
         }
     }
 }

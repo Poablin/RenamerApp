@@ -48,13 +48,13 @@ namespace RenamerApp
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
             InformationList.Items.Clear();
-            InformationList.Items.Add("Started operation... please wait");
             string outputDirectory = OutputDirectoryInputBox.Text;
             if (FilePaths == null)
             {
                 InformationList.Items.Add("No files selected");
                 return;
             }
+            InformationList.Items.Add("Started operation... please wait");
             try
             {
                 foreach (string file in FilePaths)
@@ -72,11 +72,13 @@ namespace RenamerApp
                     //Her bestemmer man hvor det skal outputtes til
                     if (CopyCheckBox.IsChecked == true)
                     {
+                        InformationList.Items.Add($"Started copying: {name}{exte}");
                        await Task.Run(() => File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));
                        InformationList.Items.Add($"Renamed \"{oldn}\" to \"{name}{exte}\" {(outputDirectory == "" ? "" : $"and copied file to {outputDirectory}")}");
                     }
                     else 
                     {
+                        InformationList.Items.Add($"Started moving: {name}{exte}");
                         await Task.Run(() => File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));
                         InformationList.Items.Add($"Renamed \"{oldn}\" to \"{name}{exte}\" {(outputDirectory == "" ? "" : $"and moved file to {outputDirectory}")}");
                     }

@@ -11,6 +11,7 @@ namespace RenamerApp
         private TextBox directoryInputBox;
         private TextBox outputDirectoryInputBox;
         private CheckBox upperCaseCheckBox;
+        private CheckBox trimCheckBox;
 
         public EditorWindow()
         {
@@ -18,13 +19,15 @@ namespace RenamerApp
             informationList = new EditorInformationList();
             directoryInputBox = new EditorTextBox("Directory Path", 200, 100, 50);
             outputDirectoryInputBox = new EditorTextBox("Output Path", 200, 100, 70);
-            upperCaseCheckBox = new EditorCheckBox(200, 20, 350, 70, "Uppercase");
+            upperCaseCheckBox = new EditorCheckBox(200, 20, 350, 40, "Uppercase");
+            trimCheckBox = new EditorCheckBox(200, 20, 350, 70, "Trim");
             var startButton = new EditorButton(0, 0, "Start");
             var stopButton = new EditorButton(0, 50, "Stop");
             startButton.Click += StartOperation;
 
             grid.Children.Add(informationList);
             grid.Children.Add(upperCaseCheckBox);
+            grid.Children.Add(trimCheckBox);
             grid.Children.Add(directoryInputBox);
             grid.Children.Add(outputDirectoryInputBox);
             grid.Children.Add(startButton);
@@ -51,6 +54,7 @@ namespace RenamerApp
                         //name = name.Substring(6);
                         //name = name.Replace("_", " ");
                         //name = name.Replace("  ", " ");
+                        if (trimCheckBox.IsChecked == true) name = name.Trim();
                         if (upperCaseCheckBox.IsChecked == true) name = name.Substring(0, 1).ToUpper() + name[1..];
                         //Her bestemmer man hvor det skal outputtes til
                         informationList.Items.Add("Copying file for: " + name);

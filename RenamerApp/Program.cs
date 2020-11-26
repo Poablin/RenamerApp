@@ -14,7 +14,7 @@ namespace RenamerApp
             window.MinHeight = 300;
             window.MinWidth = 500;
             window.Height = 300;
-            window.Width = 500;
+            window.Width = 516;
             app.Run(window);
         }
     }

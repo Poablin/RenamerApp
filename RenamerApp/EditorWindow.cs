@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,8 +23,9 @@ namespace RenamerApp
             upperCaseCheckBox = new EditorCheckBox(200, 20, 350, 40, "Uppercase");
             trimCheckBox = new EditorCheckBox(200, 20, 350, 70, "Trim");
             var startButton = new EditorButton(0, 0, "Start");
-            var stopButton = new EditorButton(0, 50, "Stop");
+            var stopButton = new EditorButton(0, 50, "Select");
             startButton.Click += StartOperation;
+            stopButton.Click += btnOpenFile_Click;
 
             grid.Children.Add(informationList);
             grid.Children.Add(upperCaseCheckBox);
@@ -47,29 +49,35 @@ namespace RenamerApp
                 {
                     try
                     {
-                        string dire = Path.GetDirectoryName(file);
                         string name = Path.GetFileNameWithoutExtension(file);
                         string exte = Path.GetExtension(file);
+                        informationList.Items.Add("Renaming file: " + name + exte);
                         //Under kan endres hva som skjer med navnet
                         //name = name.Substring(6);
                         //name = name.Replace("_", " ");
                         //name = name.Replace("  ", " ");
                         if (trimCheckBox.IsChecked == true) name = name.Trim();
-                        if (upperCaseCheckBox.IsChecked == true) name = name.Substring(0, 1).ToUpper() + name[1..];
+                        name = upperCaseCheckBox.IsChecked == true ? name.Substring(0, 1).ToUpper() + name[1..] : name.Substring(0, 1).ToLower() + name[1..];
+                        informationList.Items.Add("Renamed file to: " + name + exte);
                         //Her bestemmer man hvor det skal outputtes til
-                        informationList.Items.Add("Copying file for: " + name);
-                        File.Copy($"{file}", $"{outputDirectory}\\{name}{exte}");
+                        File.Move($"{file}", $"{outputDirectory}\\{name}{exte}");
                     }
                     catch (Exception)
                     {
-                        informationList.Items.Add("Error copying file");
+                        informationList.Items.Add("Error renaming files");
                     }
                 }
             }
             catch (Exception ex) when (ex is ArgumentException || ex is DirectoryNotFoundException)
             {
                 informationList.Items.Add("Path not found");
-            } 
+            }
+        }
+        private void btnOpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            if (openFileDialog.ShowDialog() == true) directoryInputBox.Text = Path.GetDirectoryName(openFileDialog.FileName);
         }
     }
 }

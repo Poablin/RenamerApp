@@ -44,13 +44,12 @@ namespace RenamerApp
                     //name = name.Substring(6);
                     //name = name.Replace("_", " ");
                     //name = name.Replace("  ", " ");
-                    //if (Window.TrimCheckBox.IsChecked == true) name = name.Trim();
-                    //name = Window.UpperCaseCheckBox.IsChecked == true ? name.Substring(0, 1).ToUpper() + name[1..] : name.Substring(0, 1).ToLower() + name[1..];
-
+                    if (Window.TrimCheckBox.IsChecked == true) name = name.Trim();
+                    name = Window.UpperCaseCheckBox.IsChecked == true ? name.Substring(0, 1).ToUpper() + name[1..] : name.Substring(0, 1).ToLower() + name[1..];
                     //Her bestemmer man hvor det skal outputtes til
-                    Window.InformationList.Items.Add($"Started copying: {name}{exte}");
+                    Window.InformationList.Items.Add($"Processing: {name}{exte}");
                     await Task.Run(() => CopyOrMoveFiles(outputDirectory, file, dire, name, exte, copy));
-                    Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Copied {name}{exte} to {outputDirectory}")}");
+                    Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Moved {name}{exte} to {outputDirectory}")}");
                 }
             }
             catch (Exception ex)

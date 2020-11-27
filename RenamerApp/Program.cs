@@ -1,12 +1,12 @@
-﻿using RenamerApp.WPF_Classes;
-using System;
+﻿using System;
+using RenamerApp.WPFClasses;
 
 namespace RenamerApp
 {
-    class Program
+    internal static class Program
     {
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var app = new EditorApplication();
             var operations = new Operations(app.Window);

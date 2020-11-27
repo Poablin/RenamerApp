@@ -2,28 +2,29 @@
 using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Threading.Tasks;
+using RenamerApp.WPFClasses;
 
 namespace RenamerApp
 {
     class Operations
     {
         private EditorWindow Window { get; }
+        private string[] FilePaths { get; set; }
         public Operations(EditorWindow window)
         {
             Window = window;
             Window.StartButton.Click += StartOperation;
             Window.SelectFilesButton.Click += SelectFiles;
-            Window.SelectOutputButton.Click += SelectFolder;
-            Window.I1.Click += I1_Click;
+            Window.SelectOutputButton.Click += SelectOutputFolder;
+            Window.ContextItem1.Click += ContextItem1_Click;
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
             Window.InformationList.Items.Clear();
             string outputDirectory = Window.OutputDirectoryInputBox.Text;
-            if (Window.FilePaths == null)
+            if (FilePaths == null)
             {
                 Window.InformationList.Items.Add("No files selected");
                 return;
@@ -31,7 +32,7 @@ namespace RenamerApp
             Window.InformationList.Items.Add("Started operation... please wait");
             try
             {
-                foreach (string file in Window.FilePaths)
+                foreach (string file in FilePaths)
                 {
                     string dire = Path.GetDirectoryName(file);
                     string name = Path.GetFileNameWithoutExtension(file);
@@ -48,13 +49,13 @@ namespace RenamerApp
                     {
                         Window.InformationList.Items.Add($"Started copying: {name}{exte}");
                         await Task.Run(() => File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));
-                        Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Copied {name + exte} to {outputDirectory}")}");
+                        Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Copied {name}{exte} to {outputDirectory}")}");
                     }
                     else
                     {
                         Window.InformationList.Items.Add($"Started moving: {name}{exte}");
                         await Task.Run(() => File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"));
-                        Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Moved {name + exte} to {outputDirectory}")}");
+                        Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Moved {name}{exte} to {outputDirectory}")}");
                     }
                 }
             }
@@ -62,20 +63,18 @@ namespace RenamerApp
             {
                 Window.InformationList.Items.Add(ex);
             }
-            finally { Window.FilePaths = null; Window.SelectFilesButton.Content = "Select"; Window.InformationList.Items.Add("Operation finished!"); }
+            finally { FilePaths = null; Window.SelectFilesButton.Content = "Select"; Window.InformationList.Items.Add("Operation finished!"); }
 
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-            if (openFileDialog.ShowDialog() == true)
-            {
-                Window.FilePaths = openFileDialog.FileNames;
-                Window.SelectFilesButton.Content = $"Select ({Window.FilePaths.Length})";
-            }
+            if (openFileDialog.ShowDialog() != true) return;
+            FilePaths = openFileDialog.FileNames;
+            Window.SelectFilesButton.Content = $"Select ({FilePaths.Length})";
         }
-        private void SelectFolder(object sender, RoutedEventArgs e)
+        private void SelectOutputFolder(object sender, RoutedEventArgs e)
         {
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
@@ -83,10 +82,10 @@ namespace RenamerApp
             if (result != CommonFileDialogResult.Ok) return;
             Window.OutputDirectoryInputBox.Text = dialog.FileName;
         }
-        private void I1_Click(object sender, RoutedEventArgs e)
+        private void ContextItem1_Click(object sender, RoutedEventArgs e)
         {
             if (Window.InformationList.SelectedItem == null) return;
-            Clipboard.SetText(Window.InformationList.SelectedItem.ToString());
+            Clipboard.SetText(Window.InformationList.SelectedItem.ToString() ?? throw new InvalidOperationException());
         }
     }
 }

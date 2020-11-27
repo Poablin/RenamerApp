@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace RenamerApp.WPF_Classes
+namespace RenamerApp.WPFClasses
 {
     class EditorApplication : Application
     {

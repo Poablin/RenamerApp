@@ -1,19 +1,18 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Gu.Wpf.Adorners;
 
-namespace RenamerApp
+namespace RenamerApp.WPFClasses
 {
-    class EditorCheckBox : CheckBox
+    class EditorTextBox : TextBox
     {
-
-        public EditorCheckBox(int width, int height, int marginLeft, int marginTop, string content)
+        public EditorTextBox(string watermark, int width, int marginLeft, int marginTop)
         {
+            Watermark.SetText(this, watermark);
             Width = width;
-            Height = height;
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
             Margin = new Thickness(marginLeft, marginTop, 0, 0);
-            Content = content;
         }
     }
 }

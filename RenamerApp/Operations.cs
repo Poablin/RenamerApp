@@ -46,8 +46,8 @@ namespace RenamerApp
                     //name = name.Replace("  ", " ");
                     //if (Window.TrimCheckBox.IsChecked == true) name = name.Trim();
                     //name = Window.UpperCaseCheckBox.IsChecked == true ? name.Substring(0, 1).ToUpper() + name[1..] : name.Substring(0, 1).ToLower() + name[1..];
+
                     //Her bestemmer man hvor det skal outputtes til
-                    //Window.InformationList.Items.Add($"Started moving: {name}{exte}");
                     Window.InformationList.Items.Add($"Started copying: {name}{exte}");
                     await Task.Run(() => CopyOrMoveFiles(outputDirectory, file, dire, name, exte, copy));
                     Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Copied {name}{exte} to {outputDirectory}")}");

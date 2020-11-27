@@ -8,19 +8,21 @@ namespace RenamerApp.WPFClasses
         private Grid Grid { get; } = new Grid();
         public ListBox InformationList { get; }
         public TextBox OutputDirectoryInputBox { get; }
-        public CheckBox CopyCheckBox { get; }
-        public CheckBox UpperCaseCheckBox { get; }
-        public CheckBox TrimCheckBox { get; }
+        public EditorCheckBox CopyCheckBox { get; }
+        public EditorCheckBox UpperCaseCheckBox { get; }
+        public EditorCheckBox TrimCheckBox { get; }
         public EditorButton StartButton { get; }
         public EditorButton SelectFilesButton { get; }
         public EditorButton SelectOutputButton { get; }
+        public EditorProgressBar ProgressBar { get; }
         private ContextMenu Context { get; } = new ContextMenu();
         public MenuItem ContextItem1 { get; } = new MenuItem { Header = "Copy" };
 
         public EditorWindow()
         {
             Context.Items.Add(ContextItem1);
-            
+
+            Grid.Children.Add(ProgressBar = new EditorProgressBar(200, 20, 100, 90));
             Grid.Children.Add(InformationList = new EditorInformationList { ContextMenu = Context });
             Grid.Children.Add(OutputDirectoryInputBox = new EditorTextBox("Output Path", 200, 100, 70));
             Grid.Children.Add(CopyCheckBox = new EditorCheckBox(200, 20, 350, 10, "Copy"));

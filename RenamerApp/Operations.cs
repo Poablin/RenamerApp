@@ -22,9 +22,9 @@ namespace RenamerApp
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
-            Window.InformationList.Items.Clear();
             string outputDirectory = Window.OutputDirectoryInputBox.Text;
             bool copy = false;
+            Window.InformationList.Items.Clear();
             if (Window.CopyCheckBox.IsChecked == true) copy = true;
             if (FilePaths == null)
             {
@@ -59,7 +59,6 @@ namespace RenamerApp
             finally { FilePaths = null; Window.SelectFilesButton.Content = "Select"; Window.InformationList.Items.Add("Operation finished!"); }
 
         }
-
         private void CopyOrMoveFiles(string outputDirectory, string file, string dire, string name, string exte, bool copy)
         {
             if (copy == true) File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}");
@@ -67,16 +66,14 @@ namespace RenamerApp
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = true;
+            var openFileDialog = new OpenFileDialog {Multiselect = true};
             if (openFileDialog.ShowDialog() != true) return;
             FilePaths = openFileDialog.FileNames;
             Window.SelectFilesButton.Content = $"Select ({FilePaths.Length})";
         }
         private void SelectOutputFolder(object sender, RoutedEventArgs e)
         {
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
+            var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result != CommonFileDialogResult.Ok) return;
             Window.OutputDirectoryInputBox.Text = dialog.FileName;

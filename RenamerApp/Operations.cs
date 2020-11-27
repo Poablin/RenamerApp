@@ -22,11 +22,10 @@ namespace RenamerApp
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
+            Window.InformationList.Items.Clear();
+            string outputDirectory = Window.OutputDirectoryInputBox.Text;
             bool copy = false;
             if (Window.CopyCheckBox.IsChecked == true) copy = true;
-            Window.InformationList.Items.Clear();
-
-            string outputDirectory = Window.OutputDirectoryInputBox.Text;
             if (FilePaths == null)
             {
                 Window.InformationList.Items.Add("No files selected");
@@ -41,8 +40,16 @@ namespace RenamerApp
                     string name = Path.GetFileNameWithoutExtension(file);
                     string exte = Path.GetExtension(file);
                     string oldn = Path.GetFileNameWithoutExtension(file);
+                    //Under kan endres hva som skjer med navnet
+                    //name = name.Substring(6);
+                    //name = name.Replace("_", " ");
+                    //name = name.Replace("  ", " ");
+                    //if (Window.TrimCheckBox.IsChecked == true) name = name.Trim();
+                    //name = Window.UpperCaseCheckBox.IsChecked == true ? name.Substring(0, 1).ToUpper() + name[1..] : name.Substring(0, 1).ToLower() + name[1..];
+                    //Her bestemmer man hvor det skal outputtes til
+                    //Window.InformationList.Items.Add($"Started moving: {name}{exte}");
                     Window.InformationList.Items.Add($"Started copying: {name}{exte}");
-                    await Task.Run(() => CopyFiles(file, outputDirectory, copy));
+                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, file, dire, name, exte, copy));
                     Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Copied {name}{exte} to {outputDirectory}")}");
                 }
             }
@@ -54,26 +61,10 @@ namespace RenamerApp
 
         }
 
-        private void CopyFiles(string file, string outputDirectory, bool copy)
+        private void CopyOrMoveFiles(string outputDirectory, string file, string dire, string name, string exte, bool copy)
         {
-            string dire = Path.GetDirectoryName(file);
-            string name = Path.GetFileNameWithoutExtension(file);
-            string exte = Path.GetExtension(file);
-            //Under kan endres hva som skjer med navnet
-            //name = name.Substring(6);
-            //name = name.Replace("_", " ");
-            //name = name.Replace("  ", " ");
-            //if (Window.TrimCheckBox.IsChecked == true) name = name.Trim();
-            //name = Window.UpperCaseCheckBox.IsChecked == true ? name.Substring(0, 1).ToUpper() + name[1..] : name.Substring(0, 1).ToLower() + name[1..];
-            //Her bestemmer man hvor det skal outputtes til
-
             if (copy == true) File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}");
-            else
-            {
-                //Window.InformationList.Items.Add($"Started moving: {name}{exte}");
-                File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}");
-                //Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Moved {name}{exte} to {outputDirectory}")}");
-            }
+            else { File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"); }
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {

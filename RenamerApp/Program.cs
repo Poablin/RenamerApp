@@ -9,7 +9,8 @@ namespace RenamerApp
         private static void Main(string[] args)
         {
             var app = new EditorApplication();
-            var operations = new Operations(app.Window);
+            var logger = new Logger(app.Window.InformationList.Items);
+            var operations = new Operations(app.Window, logger);
             app.Run(app.Window);
         }
     }

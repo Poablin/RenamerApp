@@ -10,10 +10,12 @@ namespace RenamerApp
 {
     class Operations
     {
+        private ILogger Logger { get; }
         private EditorWindow Window { get; }
         private string[] FilePaths { get; set; }
-        public Operations(EditorWindow window)
+        public Operations(EditorWindow window, ILogger logger)
         {
+            Logger = logger;
             Window = window;
             Window.StartButton.Click += StartOperation;
             Window.SelectFilesButton.Click += SelectFiles;
@@ -24,46 +26,43 @@ namespace RenamerApp
         {
             string outputDirectory = Window.OutputDirectoryInputBox.Text;
             bool copy = false;
-            
-            Window.InformationList.Items.Clear();
+            Logger.Clear();
             if (Window.CopyCheckBox.IsChecked == true) copy = true;
             if (FilePaths == null)
             {
-                Window.InformationList.Items.Add("No files selected");
+                Logger.Log("No files selected");
                 return;
             }
-            Window.InformationList.Items.Add("Started operation... please wait");
+            Logger.Log("Started operation... please wait");
             try
             {
                 foreach (string file in FilePaths)
                 {
-                    string dire = Path.GetDirectoryName(file);
-                    string name = Path.GetFileNameWithoutExtension(file);
-                    string exte = Path.GetExtension(file);
-                    string oldn = Path.GetFileNameWithoutExtension(file);
+                    var fileInfo = new FileInfo(file);
+                    fileInfo.Copy = copy;
                     //Under kan endres hva som skjer med navnet
                     //name = name.Substring(6);
                     //name = name.Replace("_", " ");
                     //name = name.Replace("  ", " ");
-                    if (Window.TrimCheckBox.IsChecked == true) name = name.Trim();
-                    name = Window.UpperCaseCheckBox.IsChecked == true ? name.Substring(0, 1).ToUpper() + name[1..] : name.Substring(0, 1).ToLower() + name[1..];
+                    if (Window.TrimCheckBox.IsChecked == true) fileInfo.Trim();
+                    fileInfo.UpperCase(Window.UpperCaseCheckBox.IsChecked);
                     //Her bestemmer man hvor det skal outputtes til
-                    Window.InformationList.Items.Add($"Processing: \"{name}{exte}\"");
-                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, file, dire, name, exte, copy));
-                    Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Moved \"{name}{exte}\" to {outputDirectory}")}");
+                    Logger.Log(fileInfo.LogStartProcessing);
+                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, copy));
+                    Logger.Log(fileInfo.LogFinishedProcessing);
                 }
             }
             catch (Exception ex)
             {
-                Window.InformationList.Items.Add(ex);
+                Logger.Log(ex);
             }
-            finally { FilePaths = null; Window.SelectFilesButton.Content = "Select"; Window.InformationList.Items.Add("Operation finished!"); }
+            finally { FilePaths = null; Window.SelectFilesButton.Content = "Select"; Logger.Log("Operation finished!"); }
 
         }
-        private void CopyOrMoveFiles(string outputDirectory, string file, string dire, string name, string exte, bool copy)
+        private void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool copy)
         {
-            if (copy == true) File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}", true);
-            else { File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"); }
+            if (copy == true) File.Copy($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", true);
+            else { File.Move($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}"); }
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {

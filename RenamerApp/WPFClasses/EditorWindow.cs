@@ -22,7 +22,6 @@ namespace RenamerApp.WPFClasses
         {
             Context.Items.Add(ContextItem1);
 
-            Grid.Children.Add(ProgressBar = new EditorProgressBar(200, 20, 100, 90));
             Grid.Children.Add(InformationList = new EditorInformationList { ContextMenu = Context });
             Grid.Children.Add(OutputDirectoryInputBox = new EditorTextBox("Output Path", 200, 100, 70));
             Grid.Children.Add(CopyCheckBox = new EditorCheckBox(200, 20, 350, 10, "Copy"));
@@ -31,6 +30,7 @@ namespace RenamerApp.WPFClasses
             Grid.Children.Add(StartButton = new EditorButton(0, 0, "Start"));
             Grid.Children.Add(SelectFilesButton = new EditorButton(0, 50, "Select"));
             Grid.Children.Add(SelectOutputButton = new EditorButton(50, 50, "Output"));
+            Grid.Children.Add(ProgressBar = new EditorProgressBar(200, 20, 100, 90));
 
             Content = Grid;
         }

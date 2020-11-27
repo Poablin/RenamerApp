@@ -24,6 +24,7 @@ namespace RenamerApp
         {
             string outputDirectory = Window.OutputDirectoryInputBox.Text;
             bool copy = false;
+            
             Window.InformationList.Items.Clear();
             if (Window.CopyCheckBox.IsChecked == true) copy = true;
             if (FilePaths == null)
@@ -47,9 +48,9 @@ namespace RenamerApp
                     if (Window.TrimCheckBox.IsChecked == true) name = name.Trim();
                     name = Window.UpperCaseCheckBox.IsChecked == true ? name.Substring(0, 1).ToUpper() + name[1..] : name.Substring(0, 1).ToLower() + name[1..];
                     //Her bestemmer man hvor det skal outputtes til
-                    Window.InformationList.Items.Add($"Processing: {name}{exte}");
+                    Window.InformationList.Items.Add($"Processing: \"{name}{exte}\"");
                     await Task.Run(() => CopyOrMoveFiles(outputDirectory, file, dire, name, exte, copy));
-                    Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Moved {name}{exte} to {outputDirectory}")}");
+                    Window.InformationList.Items.Add($"{(oldn == name ? "" : $"Renamed \"{oldn}\" to \"{name}{exte}\" ")}{(outputDirectory == "" ? "" : $"Moved \"{name}{exte}\" to {outputDirectory}")}");
                 }
             }
             catch (Exception ex)
@@ -61,12 +62,12 @@ namespace RenamerApp
         }
         private void CopyOrMoveFiles(string outputDirectory, string file, string dire, string name, string exte, bool copy)
         {
-            if (copy == true) File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}");
+            if (copy == true) File.Copy($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}", true);
             else { File.Move($"{file}", $"{(outputDirectory == "" ? dire : outputDirectory)}\\{name}{exte}"); }
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog {Multiselect = true};
+            var openFileDialog = new OpenFileDialog { Multiselect = true };
             if (openFileDialog.ShowDialog() != true) return;
             FilePaths = openFileDialog.FileNames;
             Window.SelectFilesButton.Content = $"Select ({FilePaths.Length})";

@@ -40,6 +40,7 @@ namespace RenamerApp
                 {
                     var fileInfo = new FileInfo(file);
                     fileInfo.Copy = copy;
+                    fileInfo.OutputDirectory = outputDirectory;
                     //Under kan endres hva som skjer med navnet
                     //name = name.Substring(6);
                     //name = name.Replace("_", " ");

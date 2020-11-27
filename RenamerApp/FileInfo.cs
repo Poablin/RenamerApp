@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 
 namespace RenamerApp
 {
@@ -10,17 +12,19 @@ namespace RenamerApp
         public string Exte { get; }
         public string Oldn { get; }
         public bool Copy { get; set; }
-        public string LogStartProcessing => $"Processing: \"{Name}{Exte}\"";
+        public string OutputDirectory { get; set; }
+        public string LogStartProcessing => $"Processing: \"{Oldn}{Exte}\"";
         public string LogFinishedProcessing
         {
             get
             {
-                string str = Oldn != Name ? $"Renamed \"{Oldn}\" to \"{Name}{Exte}\"" : Copy == true ? $"Copied \"{Name}{Exte}\" to {Dire}" : $"Moved \"{Name}{Exte}\" to {Dire}";
-                return str;
+                string str = string.Empty;
+                if (Oldn != Name) str += $"Renamed \"{Oldn}\" ";
+                if (Copy == true) str += $"Copied \"{Name}{Exte}\" ";
+                if (OutputDirectory != Dire && Dire != "") str += $"Moved \"{Name}{Exte}\" to {OutputDirectory} ";
+                return str.Trim();
             }
-
         }
-
         public FileInfo(string file)
         {
             File = file;
@@ -37,6 +41,5 @@ namespace RenamerApp
         {
             Name = IsChecked == true ? Name.Substring(0, 1).ToUpper() + Name[1..] : Name.Substring(0, 1).ToLower() + Name[1..];
         }
-
     }
 }

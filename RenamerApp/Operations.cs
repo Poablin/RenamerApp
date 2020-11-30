@@ -39,7 +39,7 @@ namespace RenamerApp
             {
                 foreach (string file in FilePaths)
                 {
-                    var fileInfo = new FileInfo(file) {Copy = copy, OutputDirectory = outputDirectory};
+                    var fileInfo = new FileInfo(file) { Copy = copy, OutputDirectory = outputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     //Under kan endres hva som skjer med navnet
                     if (Window.TrimCheckBox.IsChecked == true) fileNameEditor.Trim();
@@ -58,13 +58,18 @@ namespace RenamerApp
             {
                 Logger.Log(ex);
             }
-            finally { FilePaths = null; Window.SelectFilesButton.Content = "Select"; Logger.Log("Operation finished!"); }
-
+            finally
+            {
+                Logger.Log("Operation finished!");
+                FilePaths = null;
+                Window.SelectFilesButton.Content = "Select";
+                Window.InformationList.ScrollIntoView(Window.InformationList.Items[Window.InformationList.Items.Count - 1]);
+            }
         }
         private static void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool copy)
         {
             if (copy == true) File.Copy($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", true);
-            else File.Move($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}"); 
+            else File.Move($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}");
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {

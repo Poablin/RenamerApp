@@ -44,9 +44,6 @@ namespace RenamerApp
                     //Under kan endres hva som skjer med navnet
                     if (Window.TrimCheckBox.IsChecked == true) fileNameEditor.Trim();
                     fileNameEditor.UpperCase(Window.UpperCaseCheckBox.IsChecked);
-                    //name = name.Substring(6);
-                    //name = name.Replace("_", " ");
-                    //name = name.Replace("  ", " ");
                     //Her bestemmer man hvor det skal outputtes til
                     Logger.Log(fileInfo.LogStartProcessing);
                     await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, copy));

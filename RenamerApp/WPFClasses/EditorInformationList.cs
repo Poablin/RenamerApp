@@ -7,10 +7,11 @@ namespace RenamerApp.WPFClasses
     {
         public EditorInformationList()
         {
-            Height = 150;
+            Height = 152;
             Width = 500;
             HorizontalAlignment = HorizontalAlignment.Left;
-            VerticalAlignment = VerticalAlignment.Bottom;
+            VerticalAlignment = VerticalAlignment.Top;
+            Margin = new Thickness(0, 110, 0, 0);
         }
     }
 }

@@ -13,17 +13,6 @@ namespace RenamerApp
         private ILogger Logger { get; }
         private EditorWindow Window { get; }
         private string[] FilePaths { get; set; }
-        private string OutputDirectory
-        {
-            get
-            {
-                return Window.OutputDirectoryInputBox.Text;
-            }
-            set
-            {
-                Window.OutputDirectoryInputBox.Text = value;
-            }
-        }
 
         public Operations(EditorWindow window, ILogger logger)
         {
@@ -36,6 +25,7 @@ namespace RenamerApp
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
+            var outputDirectory = Window.OutputDirectoryInputBox.Text;
             bool copy = false;
             Logger.Clear();
             if (Window.CopyCheckBox.IsChecked == true) copy = true;
@@ -50,7 +40,7 @@ namespace RenamerApp
                 Window.ProgressBar.Maximum = FilePaths.Length;
                 foreach (string file in FilePaths)
                 {
-                    var fileInfo = new FileInfo(file) { Copy = copy, OutputDirectory = OutputDirectory };
+                    var fileInfo = new FileInfo(file) { Copy = copy, OutputDirectory = outputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     var windowInputs = new WindowInputs(Window);
                     //Under kan endres hva som skjer med navnet
@@ -60,7 +50,7 @@ namespace RenamerApp
                     fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
                     //Her bestemmer man hvor det skal outputtes til
                     Logger.Log(fileInfo.LogStartProcessing);
-                    await Task.Run(() => CopyOrMoveFiles(OutputDirectory, fileInfo, copy));
+                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, copy));
                     Window.ProgressBar.Value++;
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }
@@ -94,7 +84,7 @@ namespace RenamerApp
             var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result != CommonFileDialogResult.Ok) return;
-            OutputDirectory = dialog.FileName;
+            Window.OutputDirectoryInputBox.Text = dialog.FileName;
         }
         private void ContextItem1_Click(object sender, RoutedEventArgs e)
         {

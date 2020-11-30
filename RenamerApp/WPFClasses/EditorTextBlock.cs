@@ -1,18 +1,17 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Gu.Wpf.Adorners;
 
 namespace RenamerApp.WPFClasses
 {
-    class EditorTextBox : TextBox
+    class EditorTextBlock : TextBlock
     {
-        public EditorTextBox(string watermark,int maxLength, int width, int marginLeft, int marginTop)
+        public EditorTextBlock(string text, int marginLeft, int marginTop)
         {
-            MaxLength = maxLength;
-            Watermark.SetText(this, watermark);
-            Width = width;
+            //Width = width;
+            //Height = height;
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
+            Text = text;
             Margin = new Thickness(marginLeft, marginTop, 0, 0);
         }
     }

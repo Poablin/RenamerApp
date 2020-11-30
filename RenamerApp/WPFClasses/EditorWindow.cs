@@ -7,9 +7,9 @@ namespace RenamerApp.WPFClasses
     {
         private Grid Grid { get; } = new Grid();
         public ListBox InformationList { get; }
-        public TextBox OutputDirectoryInputBox { get; }        
-        public TextBox ReplaceSpecificCharInputBox { get; }
-        public TextBox ReplaceSpecificCharOutputBox { get; }
+        public TextBox OutputDirectoryInputBox { get; }
+        public TextBox SpecificCharReplaceInputBox { get; }
+        public TextBox SpecificCharReplaceOutputBox { get; }
         public EditorCheckBox CopyCheckBox { get; }
         public EditorCheckBox UpperCaseCheckBox { get; }
         public EditorCheckBox TrimCheckBox { get; }
@@ -25,9 +25,9 @@ namespace RenamerApp.WPFClasses
             Context.Items.Add(ContextItem1);
 
             Grid.Children.Add(InformationList = new EditorInformationList() { ContextMenu = Context });
-            Grid.Children.Add(OutputDirectoryInputBox = new EditorTextBox("Output Path", 200, 150, 20));
-            Grid.Children.Add(ReplaceSpecificCharInputBox = new EditorTextBox("", 15, 0, 50));
-            Grid.Children.Add(ReplaceSpecificCharOutputBox = new EditorTextBox("", 15, 15, 50));
+            Grid.Children.Add(OutputDirectoryInputBox = new EditorTextBox("Output Path", 0, 200, 150, 20));
+            Grid.Children.Add(SpecificCharReplaceInputBox = new EditorTextBox("", 1, 15, 72, 50));
+            Grid.Children.Add(SpecificCharReplaceOutputBox = new EditorTextBox("", 1, 15, 120, 50));
             Grid.Children.Add(CopyCheckBox = new EditorCheckBox(200, 20, 350, 10, "Copy"));
             Grid.Children.Add(UpperCaseCheckBox = new EditorCheckBox(200, 20, 350, 40, "Uppercase"));
             Grid.Children.Add(TrimCheckBox = new EditorCheckBox(200, 20, 350, 70, "Trim"));
@@ -35,6 +35,11 @@ namespace RenamerApp.WPFClasses
             Grid.Children.Add(SelectFilesButton = new EditorButton(50, 0, "Select"));
             Grid.Children.Add(SelectOutputButton = new EditorButton(100, 0, "Output"));
             Grid.Children.Add(ProgressBar = new EditorProgressBar(500, 20, 0, 90));
+
+            var text1 = new EditorTextBlock("Replace Char", 0, 50);
+            var text2 = new EditorTextBlock("With", 90, 50);
+            Grid.Children.Add(text1);
+            Grid.Children.Add(text2);
 
             Content = Grid;
         }

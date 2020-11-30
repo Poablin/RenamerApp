@@ -17,19 +17,13 @@ namespace RenamerApp
         {
             FileInfo.Name = isChecked == true ? FileInfo.Name.Substring(0, 1).ToUpper() + FileInfo.Name[1..] : FileInfo.Name.Substring(0, 1).ToLower() + FileInfo.Name[1..];
         }
-        public void ReplaceSpecificChar()
+        public void ReplaceSpecificString(string firststring, string secondstring)
         {
-            //name = name.Replace("_", " ");
-            //name = name.Replace("  ", " ");
+            FileInfo.Name = FileInfo.Name.Replace(firststring, secondstring);
         }
-        public void DeleteFrom()
+        public void DeleteEverythingElse(string fromIndex, string toIndex)
         {
-            //name = name.Substring(6);
-            //name = name.Substring(6, 8);
-        }
-        public void RemoveSpaces()
-        {
-            //FileInfo.Split();
+            FileInfo.Name = FileInfo.Name.Substring(Convert.ToInt32(fromIndex), Convert.ToInt32(toIndex));
         }
     }
 }

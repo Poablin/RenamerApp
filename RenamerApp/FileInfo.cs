@@ -12,6 +12,7 @@ namespace RenamerApp
         public string Exte { get; }
         public string Oldn { get; }
         public bool Copy { get; set; }
+        
         public string OutputDirectory { get; internal set; }
         public string LogStartProcessing => $"Processing: \"{Oldn}{Exte}\"";
         public string LogFinishedProcessing

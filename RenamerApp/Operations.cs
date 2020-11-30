@@ -13,6 +13,18 @@ namespace RenamerApp
         private ILogger Logger { get; }
         private EditorWindow Window { get; }
         private string[] FilePaths { get; set; }
+        private string OutputDirectory
+        {
+            get
+            {
+                return Window.OutputDirectoryInputBox.Text;
+            }
+            set
+            {
+                Window.OutputDirectoryInputBox.Text = value;
+            }
+        }
+
         public Operations(EditorWindow window, ILogger logger)
         {
             Logger = logger;
@@ -24,8 +36,6 @@ namespace RenamerApp
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
-            Window.ProgressBar.Maximum = FilePaths.Length;
-            string outputDirectory = Window.OutputDirectoryInputBox.Text;
             bool copy = false;
             Logger.Clear();
             if (Window.CopyCheckBox.IsChecked == true) copy = true;
@@ -37,16 +47,20 @@ namespace RenamerApp
             Logger.Log("Started operation... please wait");
             try
             {
+                Window.ProgressBar.Maximum = FilePaths.Length;
                 foreach (string file in FilePaths)
                 {
-                    var fileInfo = new FileInfo(file) { Copy = copy, OutputDirectory = outputDirectory };
+                    var fileInfo = new FileInfo(file) { Copy = copy, OutputDirectory = OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
+                    var windowInput = new WindowInputs(Window);
                     //Under kan endres hva som skjer med navnet
-                    if (Window.TrimCheckBox.IsChecked == true) fileNameEditor.Trim();
-                    fileNameEditor.UpperCase(Window.UpperCaseCheckBox.IsChecked);
+                    if (windowInput.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInput.FromIndex, windowInput.ToIndex);
+                    if (windowInput.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInput.SpecificStringThis, windowInput.SpecificStringWith);
+                    if (windowInput.TrimCheckBox == true) fileNameEditor.Trim();
+                    fileNameEditor.UpperCase(windowInput.UppercaseCheckBox);
                     //Her bestemmer man hvor det skal outputtes til
                     Logger.Log(fileInfo.LogStartProcessing);
-                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, copy));
+                    await Task.Run(() => CopyOrMoveFiles(OutputDirectory, fileInfo, copy));
                     Window.ProgressBar.Value++;
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }
@@ -80,7 +94,7 @@ namespace RenamerApp
             var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result != CommonFileDialogResult.Ok) return;
-            Window.OutputDirectoryInputBox.Text = dialog.FileName;
+            OutputDirectory = dialog.FileName;
         }
         private void ContextItem1_Click(object sender, RoutedEventArgs e)
         {

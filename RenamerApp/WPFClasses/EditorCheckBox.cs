@@ -8,11 +8,10 @@ namespace RenamerApp.WPFClasses
 
         public EditorCheckBox(int width, int height, int marginLeft, int marginTop, string content)
         {
-            Width = width;
-            Height = height;
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;
             Margin = new Thickness(marginLeft, marginTop, 0, 0);
+            //FlowDirection = FlowDirection.RightToLeft;
             Content = content;
         }
     }

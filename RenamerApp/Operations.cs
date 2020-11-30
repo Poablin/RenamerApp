@@ -52,12 +52,12 @@ namespace RenamerApp
                 {
                     var fileInfo = new FileInfo(file) { Copy = copy, OutputDirectory = OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
-                    var windowInput = new WindowInputs(Window);
+                    var windowInputs = new WindowInputs(Window);
                     //Under kan endres hva som skjer med navnet
-                    if (windowInput.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInput.FromIndex, windowInput.ToIndex);
-                    if (windowInput.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInput.SpecificStringThis, windowInput.SpecificStringWith);
-                    if (windowInput.TrimCheckBox == true) fileNameEditor.Trim();
-                    fileNameEditor.UpperCase(windowInput.UppercaseCheckBox);
+                    if (windowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInputs.FromIndex, windowInputs.ToIndex);
+                    if (windowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInputs.SpecificStringThis, windowInputs.SpecificStringWith);
+                    if (windowInputs.TrimCheckBox == true) fileNameEditor.Trim();
+                    fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
                     //Her bestemmer man hvor det skal outputtes til
                     Logger.Log(fileInfo.LogStartProcessing);
                     await Task.Run(() => CopyOrMoveFiles(OutputDirectory, fileInfo, copy));

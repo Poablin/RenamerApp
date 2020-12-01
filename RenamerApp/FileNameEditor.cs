@@ -23,7 +23,8 @@ namespace RenamerApp
         }
         public void DeleteEverythingElse(string fromIndex, string toIndex)
         {
-            FileInfo.Name = FileInfo.Name.Substring(Convert.ToInt32(fromIndex), Convert.ToInt32(toIndex));
+            if (toIndex == "") FileInfo.Name = FileInfo.Name.Substring(Convert.ToInt32(fromIndex));
+            else FileInfo.Name = FileInfo.Name.Substring(Convert.ToInt32(fromIndex), Convert.ToInt32(toIndex));
         }
     }
 }

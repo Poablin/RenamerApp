@@ -37,7 +37,7 @@ namespace RenamerApp
         {
             return File.Exists($"{OutputDirectory}\\{Name}{Exte}");
         }
-        public string CheckIfDirectoryExists()
+        public string CheckIfDirectoryExistsOrSetDefault()
         {
             OutputDirectory = Directory.Exists(OutputDirectory) ? OutputDirectory : Dire;
             return OutputDirectory;

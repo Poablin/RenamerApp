@@ -33,7 +33,7 @@ namespace RenamerApp
                 Logger.Log("No files selected");
                 return;
             }
-            Logger.Log("Starting operation... please wait");
+            Logger.Log("Starting operation - please wait");
             try
             {
                 Window.ProgressBar.Maximum = FilePaths.Length;
@@ -41,7 +41,6 @@ namespace RenamerApp
                 {
                     var fileInfo = new FileInfo(file) { Copy = windowInputs.CopyCheckBox, OutputDirectory = windowInputs.OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
-                    fileInfo.CheckIfDirectoryExists();
                     //Under kan endres hva som skjer med navnet
                     if (windowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInputs.FromIndex, windowInputs.ToIndex);
                     if (windowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInputs.SpecificStringThis, windowInputs.SpecificStringWith);
@@ -49,21 +48,22 @@ namespace RenamerApp
                     fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
                     Logger.Log(fileInfo.LogStartProcessing);
                     //Forskjellig error checking
+                    fileInfo.CheckIfDirectoryExistsOrSetDefault();
                     if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox != true && windowInputs.CopyCheckBox == true)
                     {
-                        Logger.Log("File already exists - overwrite not checked... skipping file");
+                        Logger.Log("File already exists - Overwrite not checked - Skipping file");
                         Window.ProgressBar.Value++;
                         continue;
                     }
                     if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox == true && windowInputs.CopyCheckBox == true && fileInfo.OutputDirectory == fileInfo.Dire)
                     {
-                        Logger.Log("File already exists - can't overwrite a file already in use... skipping file");
+                        Logger.Log("File already exists - Can't overwrite a file already in use - Skipping file");
                         Window.ProgressBar.Value++;
                         continue;
                     }
                     if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox != true)
                     {
-                        Logger.Log("File already exists - overwrite not checked... skipping file");
+                        Logger.Log("File already exists - Overwrite not checked - Skipping file");
                         Window.ProgressBar.Value++;
                         continue;
 

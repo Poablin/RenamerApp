@@ -19,7 +19,6 @@ namespace RenamerApp
             {
                 string str = string.Empty;
                 if (Oldn != Name) str += $"Renamed \"{Oldn}{Exte}\" to \"{Name}{Exte}\" ";
-                if (Copy == true) str += $"Copied \"{Name}{Exte}\" ";
                 if (OutputDirectory != Dire && OutputDirectory != "") str += $"{(Copy != true ? "Moved" : "Copied")} \"{Name}{Exte}\" to \"{OutputDirectory}\" ";
                 if (str == string.Empty) str += "Didn't do anything with file";
                 return str.Trim();

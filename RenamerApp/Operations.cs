@@ -13,22 +13,24 @@ namespace RenamerApp
         private ILogger Logger { get; }
         private EditorWindow Window { get; }
         private string[] FilePaths { get; set; }
+        private WindowInputs WindowInputs { get; set; }
 
         public Operations(EditorWindow window, ILogger logger)
         {
             Logger = logger;
             Window = window;
+            WindowInputs = new WindowInputs(window);
             Window.StartButton.Click += StartOperation;
             Window.SelectFilesButton.Click += SelectFiles;
             Window.SelectOutputButton.Click += SelectOutputFolder;
             Window.ContextItem1.Click += ContextItem1_Click;
+            Window.ResetUiButton.Click += ResetUi;
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
             var outputDirectory = Window.OutputDirectoryInputBox.Text;
-            bool copy = false;
+            Window.ProgressBar.Value = 0;
             Logger.Clear();
-            if (Window.CopyCheckBox.IsChecked == true) copy = true;
             if (FilePaths == null)
             {
                 Logger.Log("No files selected");
@@ -40,17 +42,16 @@ namespace RenamerApp
                 Window.ProgressBar.Maximum = FilePaths.Length;
                 foreach (string file in FilePaths)
                 {
-                    var fileInfo = new FileInfo(file) { Copy = copy, OutputDirectory = outputDirectory };
+                    var fileInfo = new FileInfo(file) { Copy = WindowInputs.CopyCheckBox, OutputDirectory = outputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
-                    var windowInputs = new WindowInputs(Window);
                     //Under kan endres hva som skjer med navnet
-                    if (windowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInputs.FromIndex, windowInputs.ToIndex);
-                    if (windowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInputs.SpecificStringThis, windowInputs.SpecificStringWith);
-                    if (windowInputs.TrimCheckBox == true) fileNameEditor.Trim();
-                    fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
+                    if (WindowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(WindowInputs.FromIndex, WindowInputs.ToIndex);
+                    if (WindowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(WindowInputs.SpecificStringThis, WindowInputs.SpecificStringWith);
+                    if (WindowInputs.TrimCheckBox == true) fileNameEditor.Trim();
+                    fileNameEditor.UpperCase(WindowInputs.UppercaseCheckBox);
                     //Her bestemmer man hvor det skal outputtes til
                     Logger.Log(fileInfo.LogStartProcessing);
-                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, copy));
+                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, WindowInputs.CopyCheckBox));
                     Window.ProgressBar.Value++;
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }
@@ -67,7 +68,7 @@ namespace RenamerApp
                 Window.InformationList.ScrollIntoView(Window.InformationList.Items[Window.InformationList.Items.Count - 1]);
             }
         }
-        private static void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool copy)
+        private static void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool? copy)
         {
             if (copy == true) File.Copy($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", true);
             else File.Move($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}");
@@ -90,6 +91,21 @@ namespace RenamerApp
         {
             if (Window.InformationList.SelectedItem == null) return;
             Clipboard.SetText(Window.InformationList.SelectedItem.ToString() ?? throw new InvalidOperationException());
+        }
+        private void ResetUi(object sender, RoutedEventArgs e)
+        {
+            Logger.Clear();
+            FilePaths = null;
+            Window.SelectFilesButton.Content = "Select";
+            Window.ProgressBar.Value = 0;
+            Window.OutputDirectoryInputBox.Text = "";
+            Window.FromIndexInputBox.Text = "";
+            Window.ToIndexInputBox.Text = "";
+            Window.SpecificStringReplaceThisInputBox.Text = "";
+            Window.SpecificStringReplaceWithInputBox.Text = "";
+            Window.UpperCaseCheckBox.IsChecked = true;
+            Window.TrimCheckBox.IsChecked = false;
+            Window.CopyCheckBox.IsChecked = false;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace RenamerApp
         public string Name { get; internal set; }
         public string Exte { get; }
         public string Oldn { get; }
-        public bool Copy { get; set; }
+        public bool? Copy { get; set; }
 
         public string OutputDirectory { get; internal set; }
         public string LogStartProcessing => $"Processing: \"{Oldn}{Exte}\"";
@@ -18,9 +18,9 @@ namespace RenamerApp
             get
             {
                 string str = string.Empty;
-                if (Oldn != Name) str += $"Renamed \"{Oldn}\"";
-                if (Copy == true) str += $"Copied \"{Name}{Exte}\"";
-                if (OutputDirectory != Dire && OutputDirectory != "") str += $"Moved \"{Name}{Exte}\" to \"{OutputDirectory}\"";
+                if (Oldn != Name) str += $"Renamed \"{Oldn}\" to \"{Name}\" ";
+                if (Copy == true) str += $"Copied \"{Name}{Exte}\" ";
+                if (OutputDirectory != Dire && OutputDirectory != "") str += $"{(Copy != true ? "Moved" : "Copied")} \"{Name}{Exte}\" to \"{OutputDirectory}\" ";
                 if (str == string.Empty) str += "Didn't do anything with file";
                 return str.Trim();
             }

@@ -18,6 +18,7 @@ namespace RenamerApp.WPFClasses
         public EditorButton StartButton { get; }
         public EditorButton SelectFilesButton { get; }
         public EditorButton SelectOutputButton { get; }
+        public EditorButton ResetUiButton { get; }
         public EditorProgressBar ProgressBar { get; }
         private ContextMenu Context { get; } = new ContextMenu();
         public MenuItem ContextItem1 { get; } = new MenuItem { Header = "Copy Text" };
@@ -38,6 +39,7 @@ namespace RenamerApp.WPFClasses
             Grid.Children.Add(StartButton = new EditorButton(0, 0, "Start"));
             Grid.Children.Add(SelectFilesButton = new EditorButton(50, 0, "Select"));
             Grid.Children.Add(SelectOutputButton = new EditorButton(100, 0, "Output"));
+            Grid.Children.Add(ResetUiButton = new EditorButton(450,40,"Reset UI"));
             Grid.Children.Add(ProgressBar = new EditorProgressBar(500, 20, 0, 90));
 
             var text1 = new EditorTextBlock("Replace string", 0, 50);

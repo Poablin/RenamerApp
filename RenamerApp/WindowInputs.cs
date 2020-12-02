@@ -11,6 +11,7 @@ namespace RenamerApp
         public string ToIndex { get; }
         public bool? TrimCheckBox { get; }
         public bool? UppercaseCheckBox { get; }
+        public bool? CopyCheckBox { get; }
         public WindowInputs(EditorWindow window)
         {
             Window = window;
@@ -20,6 +21,7 @@ namespace RenamerApp
             ToIndex = Window.ToIndexInputBox.Text;
             TrimCheckBox = Window.TrimCheckBox.IsChecked;
             UppercaseCheckBox = Window.UpperCaseCheckBox.IsChecked;
+            CopyCheckBox = Window.CopyCheckBox.IsChecked;
         }
     }
 }

@@ -4,7 +4,7 @@ namespace RenamerApp
 {
     public class FileInfo
     {
-        public string File { get; }
+        public string FullFile { get; }
         public string Dire { get; }
         public string Name { get; internal set; }
         public string Exte { get; }
@@ -26,11 +26,21 @@ namespace RenamerApp
         }
         public FileInfo(string file)
         {
-            File = file;
+            FullFile = file;
             Dire = Path.GetDirectoryName(file);
             Name = Path.GetFileNameWithoutExtension(file);
             Exte = Path.GetExtension(file);
             Oldn = Path.GetFileNameWithoutExtension(file);
+        }
+
+        public bool CheckIfFileExistsInOutput()
+        {
+            return File.Exists($"{OutputDirectory}\\{Name}{Exte}");
+        }
+        public string CheckIfDirectoryExists()
+        {
+            OutputDirectory = Directory.Exists(OutputDirectory) ? OutputDirectory : Dire;
+            return OutputDirectory;
         }
     }
 }

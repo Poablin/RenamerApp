@@ -25,7 +25,6 @@ namespace RenamerApp
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
-            var outputDirectory = Window.OutputDirectoryInputBox.Text;
             var windowInputs = new WindowInputs(Window);
             Window.ProgressBar.Value = 0;
             Logger.Clear();
@@ -34,38 +33,44 @@ namespace RenamerApp
                 Logger.Log("No files selected");
                 return;
             }
-            Logger.Log("Started operation... please wait");
+            Logger.Log("Starting operation... please wait");
             try
             {
                 Window.ProgressBar.Maximum = FilePaths.Length;
                 foreach (string file in FilePaths)
                 {
-
-                    var fileInfo = new FileInfo(file) { Copy = windowInputs.CopyCheckBox, OutputDirectory = outputDirectory };
+                    var fileInfo = new FileInfo(file) { Copy = windowInputs.CopyCheckBox, OutputDirectory = windowInputs.OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
+                    fileInfo.CheckIfDirectoryExists();
                     //Under kan endres hva som skjer med navnet
                     if (windowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInputs.FromIndex, windowInputs.ToIndex);
                     if (windowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInputs.SpecificStringThis, windowInputs.SpecificStringWith);
                     if (windowInputs.TrimCheckBox == true) fileNameEditor.Trim();
                     fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
-                    //Her bestemmer man hvor det skal outputtes til
                     Logger.Log(fileInfo.LogStartProcessing);
-                    if (File.Exists($"{outputDirectory}\\{fileInfo.Name}{fileInfo.Exte}"))
+                    //Forskjellig error checking
+                    if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox != true && windowInputs.CopyCheckBox == true)
                     {
-                        if (Window.OverwriteCheckBox.IsChecked == true)
-                        {
-                            Logger.Log("File Already exists - overwriting");
-                            await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, windowInputs.CopyCheckBox, true));
-                            Logger.Log(fileInfo.LogFinishedProcessing);
-                        }
-                        else
-                        {
-                            Logger.Log("File Already exists - skipping");
-                        }
+                        Logger.Log("File already exists - overwrite not checked... skipping file");
                         Window.ProgressBar.Value++;
                         continue;
                     }
-                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, windowInputs.CopyCheckBox, false));
+                    if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox == true && windowInputs.CopyCheckBox == true && fileInfo.OutputDirectory == fileInfo.Dire)
+                    {
+                        Logger.Log("File already exists - can't overwrite a file already in use... skipping file");
+                        Window.ProgressBar.Value++;
+                        continue;
+                    }
+                    if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox != true)
+                    {
+                        Logger.Log("File already exists - overwrite not checked... skipping file");
+                        Window.ProgressBar.Value++;
+                        continue;
+
+                    }
+                    //Output ting her nede
+                    if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox == true) Logger.Log("File already exists - overwriting");
+                    await Task.Run(() => CopyOrMoveFiles(fileInfo.OutputDirectory, fileInfo, windowInputs.CopyCheckBox, (bool)windowInputs.OverwriteCheckBox));
                     Window.ProgressBar.Value++;
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }
@@ -84,8 +89,8 @@ namespace RenamerApp
         }
         private void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool? copy, bool overwrite)
         {
-            if (copy == true) File.Copy($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite);
-            else File.Move($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite);
+            if (copy == true) File.Copy($"{fileInfo.FullFile}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite);
+            else File.Move($"{fileInfo.FullFile}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite);
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {

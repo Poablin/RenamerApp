@@ -5,6 +5,7 @@ namespace RenamerApp
     class WindowInputs
     {
         readonly EditorWindow Window;
+        public string OutputDirectory { get; }
         public string SpecificStringThis { get; }
         public string SpecificStringWith { get; }
         public string FromIndex { get; }
@@ -16,6 +17,7 @@ namespace RenamerApp
         public WindowInputs(EditorWindow window)
         {
             Window = window;
+            OutputDirectory = Window.OutputDirectoryInputBox.Text;
             SpecificStringThis = Window.SpecificStringReplaceThisInputBox.Text;
             SpecificStringWith = Window.SpecificStringReplaceWithInputBox.Text;
             FromIndex = Window.FromIndexInputBox.Text;

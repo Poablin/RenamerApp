@@ -42,8 +42,8 @@ namespace RenamerApp
                     var fileInfo = new FileInfo(file) { Copy = windowInputs.CopyCheckBox, OutputDirectory = windowInputs.OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     //Under kan endres hva som skjer med navnet
-                    if (windowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInputs.FromIndex, windowInputs.ToIndex);
                     if (windowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInputs.SpecificStringThis, windowInputs.SpecificStringWith);
+                    if (windowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInputs.FromIndex, windowInputs.ToIndex);
                     if (windowInputs.TrimCheckBox == true) fileNameEditor.Trim();
                     fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
                     Logger.Log(fileInfo.LogStartProcessing);

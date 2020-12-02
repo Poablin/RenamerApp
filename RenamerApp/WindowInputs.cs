@@ -12,6 +12,7 @@ namespace RenamerApp
         public bool? TrimCheckBox { get; }
         public bool? UppercaseCheckBox { get; }
         public bool? CopyCheckBox { get; }
+        public bool? OverwriteCheckBox { get; }
         public WindowInputs(EditorWindow window)
         {
             Window = window;
@@ -22,6 +23,7 @@ namespace RenamerApp
             TrimCheckBox = Window.TrimCheckBox.IsChecked;
             UppercaseCheckBox = Window.UpperCaseCheckBox.IsChecked;
             CopyCheckBox = Window.CopyCheckBox.IsChecked;
+            OverwriteCheckBox = Window.OverwriteCheckBox.IsChecked;
         }
     }
 }

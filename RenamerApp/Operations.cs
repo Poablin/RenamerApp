@@ -40,6 +40,7 @@ namespace RenamerApp
                 Window.ProgressBar.Maximum = FilePaths.Length;
                 foreach (string file in FilePaths)
                 {
+
                     var fileInfo = new FileInfo(file) { Copy = windowInputs.CopyCheckBox, OutputDirectory = outputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     //Under kan endres hva som skjer med navnet
@@ -49,7 +50,22 @@ namespace RenamerApp
                     fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
                     //Her bestemmer man hvor det skal outputtes til
                     Logger.Log(fileInfo.LogStartProcessing);
-                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, windowInputs.CopyCheckBox));
+                    if (File.Exists($"{outputDirectory}\\{fileInfo.Name}{fileInfo.Exte}"))
+                    {
+                        if (Window.OverwriteCheckBox.IsChecked == true)
+                        {
+                            Logger.Log("File Already exists - overwriting");
+                            await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, windowInputs.CopyCheckBox, true));
+                            Logger.Log(fileInfo.LogFinishedProcessing);
+                        }
+                        else
+                        {
+                            Logger.Log("File Already exists - skipping");
+                        }
+                        Window.ProgressBar.Value++;
+                        continue;
+                    }
+                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, windowInputs.CopyCheckBox, false));
                     Window.ProgressBar.Value++;
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }
@@ -66,10 +82,10 @@ namespace RenamerApp
                 Window.InformationList.ScrollIntoView(Window.InformationList.Items[Window.InformationList.Items.Count - 1]);
             }
         }
-        private static void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool? copy)
+        private void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool? copy, bool overwrite)
         {
-            if (copy == true) File.Copy($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", true);
-            else File.Move($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}");
+            if (copy == true) File.Copy($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite);
+            else File.Move($"{fileInfo.File}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite);
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
         {
@@ -102,8 +118,9 @@ namespace RenamerApp
             Window.SpecificStringReplaceThisInputBox.Text = "";
             Window.SpecificStringReplaceWithInputBox.Text = "";
             Window.UpperCaseCheckBox.IsChecked = true;
-            Window.TrimCheckBox.IsChecked = false;
+            Window.TrimCheckBox.IsChecked = true;
             Window.CopyCheckBox.IsChecked = false;
+            Window.OverwriteCheckBox.IsChecked = false;
         }
     }
 }

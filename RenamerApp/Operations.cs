@@ -13,13 +13,10 @@ namespace RenamerApp
         private ILogger Logger { get; }
         private EditorWindow Window { get; }
         private string[] FilePaths { get; set; }
-        private WindowInputs WindowInputs { get; set; }
-
         public Operations(EditorWindow window, ILogger logger)
         {
             Logger = logger;
             Window = window;
-            WindowInputs = new WindowInputs(window);
             Window.StartButton.Click += StartOperation;
             Window.SelectFilesButton.Click += SelectFiles;
             Window.SelectOutputButton.Click += SelectOutputFolder;
@@ -29,6 +26,7 @@ namespace RenamerApp
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
             var outputDirectory = Window.OutputDirectoryInputBox.Text;
+            var windowInputs = new WindowInputs(Window);
             Window.ProgressBar.Value = 0;
             Logger.Clear();
             if (FilePaths == null)
@@ -42,16 +40,16 @@ namespace RenamerApp
                 Window.ProgressBar.Maximum = FilePaths.Length;
                 foreach (string file in FilePaths)
                 {
-                    var fileInfo = new FileInfo(file) { Copy = WindowInputs.CopyCheckBox, OutputDirectory = outputDirectory };
+                    var fileInfo = new FileInfo(file) { Copy = windowInputs.CopyCheckBox, OutputDirectory = outputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     //Under kan endres hva som skjer med navnet
-                    if (WindowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(WindowInputs.FromIndex, WindowInputs.ToIndex);
-                    if (WindowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(WindowInputs.SpecificStringThis, WindowInputs.SpecificStringWith);
-                    if (WindowInputs.TrimCheckBox == true) fileNameEditor.Trim();
-                    fileNameEditor.UpperCase(WindowInputs.UppercaseCheckBox);
+                    if (windowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInputs.FromIndex, windowInputs.ToIndex);
+                    if (windowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInputs.SpecificStringThis, windowInputs.SpecificStringWith);
+                    if (windowInputs.TrimCheckBox == true) fileNameEditor.Trim();
+                    fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
                     //Her bestemmer man hvor det skal outputtes til
                     Logger.Log(fileInfo.LogStartProcessing);
-                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, WindowInputs.CopyCheckBox));
+                    await Task.Run(() => CopyOrMoveFiles(outputDirectory, fileInfo, windowInputs.CopyCheckBox));
                     Window.ProgressBar.Value++;
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }

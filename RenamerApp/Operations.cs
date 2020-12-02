@@ -64,7 +64,7 @@ namespace RenamerApp
             {
                 Logger.Log("Operation finished!");
                 FilePaths = null;
-                Window.SelectFilesButton.Content = "Select";
+                Window.SelectedFilesText.Text = "";
                 Window.InformationList.ScrollIntoView(Window.InformationList.Items[Window.InformationList.Items.Count - 1]);
             }
         }
@@ -78,7 +78,7 @@ namespace RenamerApp
             var openFileDialog = new OpenFileDialog { Multiselect = true };
             if (openFileDialog.ShowDialog() != true) return;
             FilePaths = openFileDialog.FileNames;
-            Window.SelectFilesButton.Content = $"Select ({FilePaths.Length})";
+            Window.SelectedFilesText.Text = $"Selected {FilePaths.Length} {(FilePaths.Length < 2 ? "File" : "Files")}";
         }
         private void SelectOutputFolder(object sender, RoutedEventArgs e)
         {
@@ -96,7 +96,7 @@ namespace RenamerApp
         {
             Logger.Clear();
             FilePaths = null;
-            Window.SelectFilesButton.Content = "Select";
+            Window.SelectedFilesText.Text = "";
             Window.ProgressBar.Value = 0;
             Window.OutputDirectoryInputBox.Text = "";
             Window.FromIndexInputBox.Text = "";

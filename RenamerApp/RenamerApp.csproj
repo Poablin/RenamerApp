@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <StartupObject>RenamerApp.Program</StartupObject>
+    <ApplicationIcon>folder.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,8 +20,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="folder.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Gu.Wpf.Adorners" Version="2.1.1" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="folder.ico" />
   </ItemGroup>
 
 </Project>

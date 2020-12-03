@@ -21,7 +21,7 @@ namespace RenamerApp
         {
             FileInfo.Name = FileInfo.Name.Replace(firststring, secondstring);
         }
-        public void DeleteEverythingElse(string fromIndex, string toIndex)
+        public void SubstringThis(string fromIndex, string toIndex)
         {
             if (toIndex == "") FileInfo.Name = FileInfo.Name.Substring(Convert.ToInt32(fromIndex));
             else FileInfo.Name = FileInfo.Name.Substring(Convert.ToInt32(fromIndex), Convert.ToInt32(toIndex));

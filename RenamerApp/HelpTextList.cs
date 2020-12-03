@@ -8,7 +8,7 @@ namespace RenamerApp
 {
     class HelpTextList
     {
-        public string[] TextList = new string[20];
+        public string[] TextList = new string[17];
         public HelpTextList()
         {
             TextList[0] = "Made by Poablin";

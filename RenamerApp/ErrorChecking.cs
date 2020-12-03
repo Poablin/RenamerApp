@@ -8,11 +8,11 @@ namespace RenamerApp
 {
     class ErrorChecking
     {
-        private FileInfo FileInfo { get; }
+        private FileInputs FileInfo { get; }
         private WindowInputs WindowInputs { get; }
         private ILogger Logger { get; }
 
-        public ErrorChecking(FileInfo fileInfo, WindowInputs windowInputs, ILogger logger)
+        public ErrorChecking(FileInputs fileInfo, WindowInputs windowInputs, ILogger logger)
         {
             FileInfo = fileInfo;
             WindowInputs = windowInputs;

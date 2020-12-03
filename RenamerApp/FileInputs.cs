@@ -2,7 +2,7 @@
 
 namespace RenamerApp
 {
-    public class FileInfo
+    public class FileInputs
     {
         public string FullFile { get; }
         public string Dire { get; }
@@ -24,7 +24,7 @@ namespace RenamerApp
                 return str.Trim();
             }
         }
-        public FileInfo(string file)
+        public FileInputs(string file)
         {
             FullFile = file;
             Dire = Path.GetDirectoryName(file);

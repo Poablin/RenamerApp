@@ -4,8 +4,8 @@ namespace RenamerApp
 {
     class FileNameEditor
     {
-        private FileInfo FileInfo;
-        public FileNameEditor(FileInfo file)
+        private FileInputs FileInfo;
+        public FileNameEditor(FileInputs file)
         {
             FileInfo = file;
         }

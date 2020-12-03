@@ -11,7 +11,7 @@ namespace RenamerApp
         public string[] TextList = new string[17];
         public HelpTextList()
         {
-            TextList[0] = "Made by Poablin";
+            TextList[0] = "STOP !!! BUTTON - Emergency stops all threads and exists program. Files being overwritten will have backups restored.";
             TextList[1] = string.Empty;
             TextList[2] = "SELECT BUTTON - Select the files you want to rename, move or copy.";
             TextList[3] = "OUTPUT BUTTON - Select the folder where you want files to be output to.";
@@ -20,7 +20,7 @@ namespace RenamerApp
             TextList[6] = string.Empty;
             TextList[7] = "REPLACE INPUT - Write the exact text you want to replace in the file, and what you want to replace it with.";
             TextList[8] = "Example: \"TEST.txt\" replace TEST with Test makes \"Test.txt\"";
-            TextList[9] = "KEEP INPUT - Number of the exact index range you want to keep. Leaving second box empty uses length of name. Index starts at 0.";
+            TextList[9] = "KEEP INPUT - Number of the exact index range you want to keep. Leaving box empty uses length of name. Index starts at 0.";
             TextList[10] = "Example: \"Testing.txt\" index 0 to 3 makes \"Tes.txt\"";
             TextList[11] = "Example: \"Testing.txt\" index 3 to empty makes \"ting.txt\"";
             TextList[12] = string.Empty;

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using RenamerApp.WPFClasses;
 using System.Windows.Controls;
 using System.Threading;
-using System.Text;
 
 namespace RenamerApp
 {
@@ -17,7 +16,6 @@ namespace RenamerApp
         private EditorWindow Window { get; }
         private WindowInputs WindowInputs { get; set; }
         private string[] FilePaths { get; set; }
-        private bool Stop { get; set; }
         public Operations(EditorWindow window, ILogger logger)
         {
             Logger = logger;
@@ -34,7 +32,7 @@ namespace RenamerApp
             try
             {
                 WindowInputs = new WindowInputs(Window);
-                Window.StartButton.Content = "Stop";
+                Window.StartButton.Content = "Stop !!!";
                 Window.ProgressBarPercentageText.Text = "";
                 WindowInputs.SetProgressBarValue(0);
                 Logger.Clear();
@@ -46,11 +44,11 @@ namespace RenamerApp
                 WindowInputs.SetProgressBarPercentage();
                 Logger.Log("Starting operation - Please wait");
 
-                Window.StartButton.Click += StopOperation;
+                Window.StartButton.Click += EmergencyStopOperation;
                 WindowInputs.SetProgressBarMaxmimum(FilePaths.Length);
                 foreach (string file in FilePaths)
                 {
-                    var fileInfo = new FileInfo(file) { Copy = WindowInputs.CopyCheckBox, OutputDirectory = WindowInputs.OutputDirectory };
+                    var fileInfo = new FileInputs(file) { Copy = WindowInputs.CopyCheckBox, OutputDirectory = WindowInputs.OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     var errorChecking = new ErrorChecking(fileInfo, WindowInputs, Logger);
                     //Under kan endres hva som skjer med navnet
@@ -65,15 +63,11 @@ namespace RenamerApp
                     if (errorChecking.FileExistsAndOverwriteNotChecked() == false) continue;
                     errorChecking.FileExistsAndOverwriteChecked();
                     //Output ting her nede
-                    Task<bool> test = Task.FromResult(await CopyOrMoveFiles(fileInfo.OutputDirectory, fileInfo, WindowInputs.CopyCheckBox, (bool)WindowInputs.OverwriteCheckBox));
-                    if (Stop == true)
-                    {
-                        test.Wait();
-                        break;
-                    }
+                    await CopyOrMoveFilesAsync(fileInfo.OutputDirectory, fileInfo, WindowInputs.CopyCheckBox, (bool)WindowInputs.OverwriteCheckBox);
                     WindowInputs.IncrementProgressBar();
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }
+                Logger.Log("Operation finished");
             }
             catch (Exception ex)
             {
@@ -81,18 +75,17 @@ namespace RenamerApp
             }
             finally
             {
-                Logger.Log("Operation finished");
-                Window.StartButton.Click -= StopOperation;
+                Window.StartButton.Click -= EmergencyStopOperation;
                 Window.StartButton.Content = "Start";
                 FilePaths = null;
                 WindowInputs.SetSelectedFilesText("");
                 Window.InformationList.ScrollIntoView(Window.InformationList.Items[^1]);
             }
         }
-        private async Task<bool> CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool? copy, bool overwrite)
+        private async Task<bool> CopyOrMoveFilesAsync(string outputDirectory, FileInputs fileInputs, bool? copy, bool overwrite)
         {
-            if (copy == true) await Task.Run(() => File.Copy($"{fileInfo.FullFile}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite));
-            else await Task.Run(() => File.Move($"{fileInfo.FullFile}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite));
+            if (copy == true) await Task.Run(() => File.Copy($"{fileInputs.FullFile}", $"{(outputDirectory == "" ? fileInputs.Dire : outputDirectory)}\\{fileInputs.Name}{fileInputs.Exte}", overwrite));
+            else await Task.Run(() => File.Move($"{fileInputs.FullFile}", $"{(outputDirectory == "" ? fileInputs.Dire : outputDirectory)}\\{fileInputs.Name}{fileInputs.Exte}", overwrite));
             return true;
         }
         private void SelectFiles(object sender, RoutedEventArgs e)
@@ -116,7 +109,6 @@ namespace RenamerApp
         }
         private void ShowHelpText(object sender, RoutedEventArgs e)
         {
-            //var context = new Editor
             var helpText = new HelpTextList();
             var helpList = new ListBox();
             foreach (var text in helpText.TextList)
@@ -133,10 +125,9 @@ namespace RenamerApp
             FilePaths = null;
             WindowInputs.ResetAllInputs();
         }
-        private void StopOperation(object sender, RoutedEventArgs e)
+        private void EmergencyStopOperation(object sender, RoutedEventArgs e)
         {
-            Stop = true;
-            Logger.Log("Operation stopped by user");
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
     }
 }

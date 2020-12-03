@@ -48,7 +48,11 @@ namespace RenamerApp
                     fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
                     Logger.Log(fileInfo.LogStartProcessing);
                     //Forskjellig error checking
-                    fileInfo.CheckIfDirectoryExistsOrSetDefault();
+                    if (fileInfo.CheckIfDirectoryExistsOrSetDefault() == "N/A")
+                    {
+                        Logger.Log("Directory does not exist - Please enter a valid path or empty for default.");
+                        return;
+                    }
                     if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox != true && windowInputs.CopyCheckBox == true)
                     {
                         Logger.Log("File already exists - Overwrite not checked - Skipping file");
@@ -66,7 +70,6 @@ namespace RenamerApp
                         Logger.Log("File already exists - Overwrite not checked - Skipping file");
                         Window.ProgressBar.Value++;
                         continue;
-
                     }
                     //Output ting her nede
                     if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox == true) Logger.Log("File already exists - overwriting");

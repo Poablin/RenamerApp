@@ -39,7 +39,6 @@ namespace RenamerApp
         }
         public string CheckIfDirectoryExistsOrSetDefault()
         {
-            /*OutputDirectory = Directory.Exists(OutputDirectory) ? OutputDirectory : Dire*/;
             OutputDirectory = OutputDirectory == "" ? Dire : Directory.Exists(OutputDirectory) ? OutputDirectory : "N/A";
             return OutputDirectory;
         }

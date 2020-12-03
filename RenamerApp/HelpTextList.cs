@@ -24,7 +24,10 @@ namespace RenamerApp
             TextList[10] = "Example: \"Testing.txt\" index 0 to 3 makes \"Tes.txt\"";
             TextList[11] = "Example: \"Testing.txt\" index 3 to empty makes \"ting.txt\"";
             TextList[12] = "";
-            TextList[13] = "COPY FILES CHECK: The files will be copied instead of";
+            TextList[13] = "COPY FILES: The files you select will be copied instead of moved.";
+            TextList[14] = "OVERWRITE: Selected files will be overwritten if they already exist in the output directory.";
+            TextList[15] = "UPPERCASE: File names wil always have an uppercase first letter if checked, otherwise it'll always be lower case.";
+            TextList[16] = "TRIM: Spaces on the ends of file names will be trimmed away.";
         }
     }
 }

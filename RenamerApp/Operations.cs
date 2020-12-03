@@ -36,15 +36,17 @@ namespace RenamerApp
                 Logger.Log("No files selected");
                 return;
             }
-            Logger.Log("Starting operation - please wait");
+            Logger.Log("Starting operation - Please wait");
             try
             {
                 WindowInputs.SetProgressBarMaxmimum(FilePaths.Length);
+                WindowInputs.SetProgressBarPercentage();
                 foreach (string file in FilePaths)
                 {
                     var fileInfo = new FileInfo(file) { Copy = WindowInputs.CopyCheckBox, OutputDirectory = WindowInputs.OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     var errorChecking = new ErrorChecking(fileInfo, WindowInputs, Logger);
+
                     //Under kan endres hva som skjer med navnet
                     if (WindowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(WindowInputs.SpecificStringThis, WindowInputs.SpecificStringWith);
                     if (WindowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(WindowInputs.FromIndex, WindowInputs.ToIndex);
@@ -52,9 +54,9 @@ namespace RenamerApp
                     fileNameEditor.UpperCase(WindowInputs.UppercaseCheckBox);
                     Logger.Log(fileInfo.LogStartProcessing);
                     //Forskjellig error checking
-                    if (errorChecking.DirectoryExistsOrNot() == false) return;
-                    if (errorChecking.FileExistsAndCopyEnabledAndDirectoryDefault() == false) return;
-                    if (errorChecking.FileExistsAndOverwriteNotChecked() == false) return;
+                    if (errorChecking.DirectoryExistsOrNot() == false) continue;
+                    if (errorChecking.FileExistsAndCopyEnabledAndDirectoryDefault() == false) continue;
+                    if (errorChecking.FileExistsAndOverwriteNotChecked() == false) continue;
                     errorChecking.FileExistsAndOverwriteChecked();
                     //Output ting her nede
                     await Task.Run(() => CopyOrMoveFiles(fileInfo.OutputDirectory, fileInfo, WindowInputs.CopyCheckBox, (bool)WindowInputs.OverwriteCheckBox));
@@ -68,7 +70,7 @@ namespace RenamerApp
             }
             finally
             {
-                Logger.Log("Operation finished!");
+                Logger.Log("Operation finished");
                 FilePaths = null;
                 WindowInputs.SetSelectedFilesText("");
                 Window.InformationList.ScrollIntoView(Window.InformationList.Items[^1]);
@@ -100,6 +102,7 @@ namespace RenamerApp
         }
         private void ShowHelpText(object sender, RoutedEventArgs e)
         {
+            //var context = new Editor
             var helpText = new HelpTextList();
             var helpList = new ListBox();
             foreach (var text in helpText.TextList)

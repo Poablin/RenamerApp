@@ -1,4 +1,5 @@
 ﻿using RenamerApp.WPFClasses;
+using System;
 
 namespace RenamerApp
 {
@@ -40,10 +41,15 @@ namespace RenamerApp
         public void IncrementProgressBar()
         {
             Window.ProgressBar.Value++;
+            SetProgressBarPercentage();
         }
         public void SetProgressBarMaxmimum(int maxmimum)
         {
             Window.ProgressBar.Maximum = maxmimum;
+        }
+        public void SetProgressBarPercentage()
+        {
+            Window.ProgressBarPercentageText.Text = Convert.ToString(Math.Round(Window.ProgressBar.Value / Window.ProgressBar.Maximum * 100)) + "%";
         }
         public void SetSelectedFilesText(string text)
         {
@@ -63,6 +69,7 @@ namespace RenamerApp
             Window.OverwriteCheckBox.IsChecked = false;
             Window.ProgressBar.Value = 0;
             Window.ProgressBar.Maximum = 1;
+            Window.ProgressBarPercentageText.Text = "";
         }
     }
 }

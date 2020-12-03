@@ -8,7 +8,7 @@ namespace RenamerApp
         public string Dire { get; }
         public string Name { get; internal set; }
         public string Exte { get; }
-        public string Oldn { get; }
+        private string Oldn { get; }
         public bool? Copy { get; set; }
 
         public string OutputDirectory { get; internal set; }

@@ -5,6 +5,7 @@ using System.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Threading.Tasks;
 using RenamerApp.WPFClasses;
+using System.Windows.Controls;
 
 namespace RenamerApp
 {
@@ -12,6 +13,7 @@ namespace RenamerApp
     {
         private ILogger Logger { get; }
         private EditorWindow Window { get; }
+        private WindowInputs WindowInputs { get; set; }
         private string[] FilePaths { get; set; }
         public Operations(EditorWindow window, ILogger logger)
         {
@@ -22,11 +24,12 @@ namespace RenamerApp
             Window.SelectOutputButton.Click += SelectOutputFolder;
             Window.ContextItem1.Click += ContextItem1_Click;
             Window.ResetUiButton.Click += ResetUi;
+            Window.HelpButton.Click += ShowHelpText;
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
-            var windowInputs = new WindowInputs(Window);
-            Window.ProgressBar.Value = 0;
+            WindowInputs = new WindowInputs(Window);
+            WindowInputs.SetProgressBarValue(0);
             Logger.Clear();
             if (FilePaths == null)
             {
@@ -36,45 +39,26 @@ namespace RenamerApp
             Logger.Log("Starting operation - please wait");
             try
             {
-                Window.ProgressBar.Maximum = FilePaths.Length;
+                WindowInputs.SetProgressBarMaxmimum(FilePaths.Length);
                 foreach (string file in FilePaths)
                 {
-                    var fileInfo = new FileInfo(file) { Copy = windowInputs.CopyCheckBox, OutputDirectory = windowInputs.OutputDirectory };
+                    var fileInfo = new FileInfo(file) { Copy = WindowInputs.CopyCheckBox, OutputDirectory = WindowInputs.OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
+                    var errorChecking = new ErrorChecking(fileInfo, WindowInputs, Logger);
                     //Under kan endres hva som skjer med navnet
-                    if (windowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(windowInputs.SpecificStringThis, windowInputs.SpecificStringWith);
-                    if (windowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(windowInputs.FromIndex, windowInputs.ToIndex);
-                    if (windowInputs.TrimCheckBox == true) fileNameEditor.Trim();
-                    fileNameEditor.UpperCase(windowInputs.UppercaseCheckBox);
+                    if (WindowInputs.SpecificStringThis != "") fileNameEditor.ReplaceSpecificString(WindowInputs.SpecificStringThis, WindowInputs.SpecificStringWith);
+                    if (WindowInputs.FromIndex != "") fileNameEditor.DeleteEverythingElse(WindowInputs.FromIndex, WindowInputs.ToIndex);
+                    if (WindowInputs.TrimCheckBox == true) fileNameEditor.Trim();
+                    fileNameEditor.UpperCase(WindowInputs.UppercaseCheckBox);
                     Logger.Log(fileInfo.LogStartProcessing);
                     //Forskjellig error checking
-                    if (fileInfo.CheckIfDirectoryExistsOrSetDefault() == "N/A")
-                    {
-                        Logger.Log("Directory does not exist - Please enter a valid path or empty for default.");
-                        return;
-                    }
-                    if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox != true && windowInputs.CopyCheckBox == true)
-                    {
-                        Logger.Log("File already exists - Overwrite not checked - Skipping file");
-                        Window.ProgressBar.Value++;
-                        continue;
-                    }
-                    if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox == true && windowInputs.CopyCheckBox == true && fileInfo.OutputDirectory == fileInfo.Dire)
-                    {
-                        Logger.Log("File already exists - Can't overwrite a file already in use - Skipping file");
-                        Window.ProgressBar.Value++;
-                        continue;
-                    }
-                    if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox != true)
-                    {
-                        Logger.Log("File already exists - Overwrite not checked - Skipping file");
-                        Window.ProgressBar.Value++;
-                        continue;
-                    }
+                    if (errorChecking.DirectoryExistsOrNot() == false) return;
+                    if (errorChecking.FileExistsAndCopyEnabledAndDirectoryDefault() == false) return;
+                    if (errorChecking.FileExistsAndOverwriteNotChecked() == false) return;
+                    errorChecking.FileExistsAndOverwriteChecked();
                     //Output ting her nede
-                    if (fileInfo.CheckIfFileExistsInOutput() && windowInputs.OverwriteCheckBox == true) Logger.Log("File already exists - overwriting");
-                    await Task.Run(() => CopyOrMoveFiles(fileInfo.OutputDirectory, fileInfo, windowInputs.CopyCheckBox, (bool)windowInputs.OverwriteCheckBox));
-                    Window.ProgressBar.Value++;
+                    await Task.Run(() => CopyOrMoveFiles(fileInfo.OutputDirectory, fileInfo, WindowInputs.CopyCheckBox, (bool)WindowInputs.OverwriteCheckBox));
+                    WindowInputs.IncrementProgressBar();
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }
             }
@@ -86,11 +70,11 @@ namespace RenamerApp
             {
                 Logger.Log("Operation finished!");
                 FilePaths = null;
-                Window.SelectedFilesText.Text = "";
-                Window.InformationList.ScrollIntoView(Window.InformationList.Items[Window.InformationList.Items.Count - 1]);
+                WindowInputs.SetSelectedFilesText("");
+                Window.InformationList.ScrollIntoView(Window.InformationList.Items[^1]);
             }
         }
-        private void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool? copy, bool overwrite)
+        private static void CopyOrMoveFiles(string outputDirectory, FileInfo fileInfo, bool? copy, bool overwrite)
         {
             if (copy == true) File.Copy($"{fileInfo.FullFile}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite);
             else File.Move($"{fileInfo.FullFile}", $"{(outputDirectory == "" ? fileInfo.Dire : outputDirectory)}\\{fileInfo.Name}{fileInfo.Exte}", overwrite);
@@ -114,21 +98,23 @@ namespace RenamerApp
             if (Window.InformationList.SelectedItem == null) return;
             Clipboard.SetText(Window.InformationList.SelectedItem.ToString() ?? throw new InvalidOperationException());
         }
+        private void ShowHelpText(object sender, RoutedEventArgs e)
+        {
+            var helpText = new HelpTextList();
+            var helpList = new ListBox();
+            foreach (var text in helpText.TextList)
+            {
+                helpList.Items.Add(text);
+            }
+            var helpDialog = new EditorModalWindow() { Title = "Help", Owner = Window, Content = helpList };
+            helpDialog.Show();
+        }
         private void ResetUi(object sender, RoutedEventArgs e)
         {
+            WindowInputs = new WindowInputs(Window);
             Logger.Clear();
             FilePaths = null;
-            Window.SelectedFilesText.Text = "";
-            Window.ProgressBar.Value = 0;
-            Window.OutputDirectoryInputBox.Text = "";
-            Window.FromIndexInputBox.Text = "";
-            Window.ToIndexInputBox.Text = "";
-            Window.SpecificStringReplaceThisInputBox.Text = "";
-            Window.SpecificStringReplaceWithInputBox.Text = "";
-            Window.UpperCaseCheckBox.IsChecked = true;
-            Window.TrimCheckBox.IsChecked = true;
-            Window.CopyCheckBox.IsChecked = false;
-            Window.OverwriteCheckBox.IsChecked = false;
+            WindowInputs.ResetAllInputs();
         }
     }
 }

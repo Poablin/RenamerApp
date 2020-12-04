@@ -40,7 +40,7 @@
         public void FileExistsAndOverwriteChecked()
         {
             if (FileInfo.CheckIfFileExistsInOutput() && WindowInputs.OverwriteCheckBox == true)
-                Logger.Log("File already exists - overwriting");
+                Logger.Log("File already exists - Overwriting");
         }
     }
 }

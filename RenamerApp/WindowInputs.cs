@@ -5,23 +5,25 @@ namespace RenamerApp
 {
     class WindowInputs
     {
-        public EditorWindow Window { get; }
-        public string OutputDirectory { get; }
-        public string SelectedFiles { get; }
-        public string SpecificStringThis { get; }
-        public string SpecificStringWith { get; }
-        public string FromIndex { get; }
-        public string ToIndex { get; }
-        public bool? TrimCheckBox { get; }
-        public bool? UppercaseCheckBox { get; }
-        public bool? CopyCheckBox { get; }
-        public bool? OverwriteCheckBox { get; }
-        public double ProgressBarValue { get; }
-        public double ProgressBarMaximum { get; }
+        private EditorWindow Window { get; }
+        public string OutputDirectory { get; private set; }
+        public string StartButton { get; private set; }
+        public string SelectedFiles { get; private set; }
+        public string SpecificStringThis { get; private set; }
+        public string SpecificStringWith { get; private set; }
+        public string FromIndex { get; private set; }
+        public string ToIndex { get; private set; }
+        public bool? TrimCheckBox { get; private set; }
+        public bool? UppercaseCheckBox { get; private set; }
+        public bool? CopyCheckBox { get; private set; }
+        public bool? OverwriteCheckBox { get; private set; }
+        public double ProgressBarValue { get; private set; }
+        public double ProgressBarMaximum { get; private set; }
         public WindowInputs(EditorWindow window)
         {
             Window = window;
             OutputDirectory = Window.OutputDirectoryInputBox.Text;
+            StartButton = (string)Window.StartButton.Content;
             SelectedFiles = Window.SelectedFilesText.Text;
             SpecificStringThis = Window.SpecificStringReplaceThisInputBox.Text;
             SpecificStringWith = Window.SpecificStringReplaceWithInputBox.Text;
@@ -41,19 +43,24 @@ namespace RenamerApp
         public void IncrementProgressBar()
         {
             Window.ProgressBar.Value++;
-            SetProgressBarPercentage();
+            SetProgressBarPercentage(true);
         }
         public void SetProgressBarMaxmimum(int maxmimum)
         {
             Window.ProgressBar.Maximum = maxmimum;
         }
-        public void SetProgressBarPercentage()
+        public void SetProgressBarPercentage(bool started)
         {
+            if (started == false) Window.ProgressBarPercentageText.Text = "";
             Window.ProgressBarPercentageText.Text = Convert.ToString(Math.Round(Window.ProgressBar.Value / Window.ProgressBar.Maximum * 100)) + "%";
         }
         public void SetSelectedFilesText(string text)
         {
             Window.SelectedFilesText.Text = text;
+        }
+        public void SetStartButtonContent(string text)
+        {
+            StartButton = text;
         }
         public void ResetAllInputs()
         {

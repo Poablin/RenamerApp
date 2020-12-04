@@ -37,10 +37,10 @@ namespace RenamerApp.WPFClasses
             Grid.Children.Add(SpecificStringReplaceWithInputBox = new EditorTextBox("", 0, 50, 162, 50));
             Grid.Children.Add(FromIndexInputBox = new EditorTextBox("", 2, 20, 150, 70));
             Grid.Children.Add(ToIndexInputBox = new EditorTextBox("", 2, 20, 190, 70));
-            Grid.Children.Add(CopyCheckBox = new EditorCheckBox(50, 20, 370, 0, "Copy files"));
-            Grid.Children.Add(OverwriteCheckBox = new EditorCheckBox(50, 20, 370, 20, "Overwrite"));
-            Grid.Children.Add(UpperCaseCheckBox = new EditorCheckBox(75, 20, 370, 40, "Uppercase") { IsChecked = true });
-            Grid.Children.Add(TrimCheckBox = new EditorCheckBox(45, 20, 370, 60, "Trim name") { IsChecked = true });
+            Grid.Children.Add(CopyCheckBox = new EditorCheckBox(370, 0, "Copy files"));
+            Grid.Children.Add(OverwriteCheckBox = new EditorCheckBox(370, 20, "Overwrite"));
+            Grid.Children.Add(UpperCaseCheckBox = new EditorCheckBox(370, 40, "Uppercase") { IsChecked = true });
+            Grid.Children.Add(TrimCheckBox = new EditorCheckBox(370, 60, "Trim name") { IsChecked = true });
             Grid.Children.Add(StartButton = new EditorButton(0, 0, "Start"));
             Grid.Children.Add(SelectFilesButton = new EditorButton(50, 0, "Select"));
             Grid.Children.Add(SelectOutputButton = new EditorButton(100, 0, "Output"));

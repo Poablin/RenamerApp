@@ -6,33 +6,34 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Threading.Tasks;
 using RenamerApp.WPFClasses;
 using System.Windows.Controls;
+using System.Diagnostics;
 
 namespace RenamerApp
 {
     class Operations
     {
         private ILogger Logger { get; }
-        private EditorWindow Window { get; }
+        private readonly EditorWindow _window;
         private WindowInputs WindowInputs { get; set; }
         private string[] FilePaths { get; set; }
         public Operations(EditorWindow window, ILogger logger)
         {
             Logger = logger;
-            Window = window;
-            Window.StartButton.Click += StartOperation;
-            Window.SelectFilesButton.Click += SelectFiles;
-            Window.SelectOutputButton.Click += SelectOutputFolder;
-            Window.ContextItem1.Click += ContextItem1_Click;
-            Window.ResetUiButton.Click += ResetUi;
-            Window.HelpButton.Click += ShowHelpText;
+            _window = window;
+            _window.StartButton.Click += StartOperation;
+            _window.SelectFilesButton.Click += SelectFiles;
+            _window.SelectOutputButton.Click += SelectOutputFolder;
+            _window.ContextItem1.Click += ContextItem1_Click;
+            _window.ResetUiButton.Click += ResetUi;
+            _window.HelpButton.Click += ShowHelpText;
         }
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
             try
             {
-                WindowInputs = new WindowInputs(Window);
-                Window.StartButton.Content = "Stop !!!";
-                Window.ProgressBarPercentageText.Text = "";
+                WindowInputs = new WindowInputs(_window);
+                WindowInputs.SetStartButtonContent("Stop !!!");
+                WindowInputs.SetProgressBarPercentage(false);
                 WindowInputs.SetProgressBarValue(0);
                 Logger.Clear();
                 if (FilePaths == null)
@@ -40,10 +41,10 @@ namespace RenamerApp
                     Logger.Log("No files selected");
                     return;
                 }
-                WindowInputs.SetProgressBarPercentage();
+                WindowInputs.SetProgressBarPercentage(true);
                 Logger.Log("Starting operation - Please wait");
 
-                Window.StartButton.Click += EmergencyStopOperation;
+                _window.StartButton.Click += EmergencyStopOperation;
                 WindowInputs.SetProgressBarMaxmimum(FilePaths.Length);
                 foreach (string file in FilePaths)
                 {
@@ -74,11 +75,11 @@ namespace RenamerApp
             }
             finally
             {
-                Window.StartButton.Click -= EmergencyStopOperation;
-                Window.StartButton.Content = "Start";
+                _window.StartButton.Click -= EmergencyStopOperation;
+                WindowInputs.SetStartButtonContent("Start");
                 FilePaths = null;
                 WindowInputs.SetSelectedFilesText("");
-                Window.InformationList.ScrollIntoView(Window.InformationList.Items[^1]);
+                _window.InformationList.ScrollIntoView(_window.InformationList.Items[^1]);
             }
         }
         private async Task<bool> CopyOrMoveFilesAsync(string outputDirectory, FileInputs fileInputs, bool? copy, bool overwrite)
@@ -92,19 +93,19 @@ namespace RenamerApp
             var openFileDialog = new OpenFileDialog { Multiselect = true };
             if (openFileDialog.ShowDialog() != true) return;
             FilePaths = openFileDialog.FileNames;
-            Window.SelectedFilesText.Text = $"Selected {FilePaths.Length} {(FilePaths.Length < 2 ? "File" : "Files")}";
+            _window.SelectedFilesText.Text = $"Selected {FilePaths.Length} {(FilePaths.Length < 2 ? "File" : "Files")}";
         }
         private void SelectOutputFolder(object sender, RoutedEventArgs e)
         {
             var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result != CommonFileDialogResult.Ok) return;
-            Window.OutputDirectoryInputBox.Text = dialog.FileName;
+            _window.OutputDirectoryInputBox.Text = dialog.FileName;
         }
         private void ContextItem1_Click(object sender, RoutedEventArgs e)
         {
-            if (Window.InformationList.SelectedItem == null) return;
-            Clipboard.SetText(Window.InformationList.SelectedItem.ToString() ?? throw new InvalidOperationException());
+            if (_window.InformationList.SelectedItem == null) return;
+            Clipboard.SetText(_window.InformationList.SelectedItem.ToString() ?? throw new InvalidOperationException());
         }
         private void ShowHelpText(object sender, RoutedEventArgs e)
         {
@@ -114,19 +115,19 @@ namespace RenamerApp
             {
                 helpList.Items.Add(text);
             }
-            var helpDialog = new EditorModalWindow() { Title = "Help", Owner = Window, Content = helpList };
+            var helpDialog = new EditorModalWindow(693, 383) { Title = "Help", Owner = _window, Content = helpList, MaxWidth = 693, MaxHeight = 383 };
             helpDialog.Show();
         }
         private void ResetUi(object sender, RoutedEventArgs e)
         {
-            WindowInputs = new WindowInputs(Window);
+            WindowInputs = new WindowInputs(_window);
             Logger.Clear();
             FilePaths = null;
             WindowInputs.ResetAllInputs();
         }
         private void EmergencyStopOperation(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.GetCurrentProcess().Kill();
+            Process.GetCurrentProcess().Kill();
         }
     }
 }

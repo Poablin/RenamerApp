@@ -8,7 +8,7 @@ namespace RenamerApp.WPFClasses
         public EditorApplication()
         {
             Window = new EditorWindow();
-            Window.Title = "File Renamer";
+            Window.Title = "FileRenamer";
             Window.Height = 300;
             Window.Width = 516;
             Window.MaxHeight = 300;

@@ -6,7 +6,7 @@ namespace RenamerApp.WPFClasses
     class EditorCheckBox : CheckBox
     {
 
-        public EditorCheckBox(int width, int height, int marginLeft, int marginTop, string content)
+        public EditorCheckBox(int marginLeft, int marginTop, string content)
         {
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;

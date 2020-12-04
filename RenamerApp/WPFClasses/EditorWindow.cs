@@ -29,6 +29,7 @@ namespace RenamerApp.WPFClasses
 
         public EditorWindow()
         {
+            ResizeMode = ResizeMode.NoResize;
             Context.Items.Add(ContextItem1);
 
             Grid.Children.Add(InformationList = new EditorInformationList() { ContextMenu = Context });

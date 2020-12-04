@@ -8,10 +8,10 @@ namespace RenamerApp.WPFClasses
         public Grid Grid { get; } = new Grid();
         public EditorModalWindow(int width, int height)
         {
+            ResizeMode = ResizeMode.NoResize;
+
             Width = width;
             Height = height;
-            MinWidth = width;
-            MinHeight = height;
             Content = Grid;
         }
     }

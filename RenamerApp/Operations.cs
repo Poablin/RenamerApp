@@ -6,7 +6,6 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Threading.Tasks;
 using RenamerApp.WPFClasses;
 using System.Windows.Controls;
-using System.Threading;
 
 namespace RenamerApp
 {

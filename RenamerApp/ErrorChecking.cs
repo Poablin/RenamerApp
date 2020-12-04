@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RenamerApp
+﻿namespace RenamerApp
 {
-    class ErrorChecking
+    internal class ErrorChecking
     {
-        private FileInputs FileInfo { get; }
-        private WindowInputs WindowInputs { get; }
-        private ILogger Logger { get; }
-
         public ErrorChecking(FileInputs fileInfo, WindowInputs windowInputs, ILogger logger)
         {
             FileInfo = fileInfo;
             WindowInputs = windowInputs;
             Logger = logger;
         }
+
+        private FileInputs FileInfo { get; }
+        private WindowInputs WindowInputs { get; }
+        private ILogger Logger { get; }
 
         public bool DirectoryExistsOrNot()
         {
@@ -47,7 +41,6 @@ namespace RenamerApp
         {
             if (FileInfo.CheckIfFileExistsInOutput() && WindowInputs.OverwriteCheckBox == true)
                 Logger.Log("File already exists - overwriting");
-            return;
         }
     }
 }

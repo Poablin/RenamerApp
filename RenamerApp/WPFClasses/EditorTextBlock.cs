@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace RenamerApp.WPFClasses
 {
-    class EditorTextBlock : TextBlock
+    internal class EditorTextBlock : TextBlock
     {
         public EditorTextBlock(string text, int marginLeft, int marginTop)
         {

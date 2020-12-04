@@ -3,9 +3,8 @@ using System.Windows.Controls;
 
 namespace RenamerApp.WPFClasses
 {
-    class EditorModalWindow : Window
+    internal class EditorModalWindow : Window
     {
-        public Grid Grid { get; } = new Grid();
         public EditorModalWindow(int width, int height)
         {
             ResizeMode = ResizeMode.NoResize;
@@ -14,5 +13,7 @@ namespace RenamerApp.WPFClasses
             Height = height;
             Content = Grid;
         }
+
+        public Grid Grid { get; } = new Grid();
     }
 }

@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace RenamerApp.WPFClasses
 {
-    class EditorInformationList : ListBox
+    internal class EditorInformationList : ListBox
     {
         public EditorInformationList()
         {

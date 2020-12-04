@@ -4,12 +4,12 @@ using Gu.Wpf.Adorners;
 
 namespace RenamerApp.WPFClasses
 {
-    class EditorTextBox : TextBox
+    internal class EditorTextBox : TextBox
     {
-        public EditorTextBox(string watermark,int maxLength, int width, int marginLeft, int marginTop)
+        public EditorTextBox(string watermark, int maxLength, int width, int marginLeft, int marginTop)
         {
             MaxLength = maxLength;
-            Watermark.SetText(this, watermark);
+            this.SetText(watermark);
             Width = width;
             HorizontalAlignment = HorizontalAlignment.Left;
             VerticalAlignment = VerticalAlignment.Top;

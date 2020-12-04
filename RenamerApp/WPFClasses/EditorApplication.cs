@@ -2,9 +2,8 @@
 
 namespace RenamerApp.WPFClasses
 {
-    class EditorApplication : Application
+    internal class EditorApplication : Application
     {
-        public EditorWindow Window { get; }
         public EditorApplication()
         {
             Window = new EditorWindow();
@@ -14,5 +13,7 @@ namespace RenamerApp.WPFClasses
             Window.MaxHeight = 300;
             Window.MaxWidth = 516;
         }
+
+        public EditorWindow Window { get; }
     }
 }

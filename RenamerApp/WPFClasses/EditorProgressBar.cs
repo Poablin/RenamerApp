@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace RenamerApp.WPFClasses
 {
-    class EditorProgressBar : ProgressBar
+    internal class EditorProgressBar : ProgressBar
     {
         public EditorProgressBar(int width, int height, int marginLeft, int marginTop)
         {

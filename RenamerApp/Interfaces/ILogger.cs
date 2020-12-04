@@ -2,10 +2,18 @@
 
 namespace RenamerApp
 {
-    interface ILogger
+    internal interface ILogger
     {
-        void Clear() { }
-        void Log(string text) { }
-        void Log(Exception ex) { }
+        void Clear()
+        {
+        }
+
+        void Log(string text)
+        {
+        }
+
+        void Log(Exception ex)
+        {
+        }
     }
 }

@@ -1,22 +1,18 @@
-﻿using Microsoft.Win32;
-using System;
-using System.IO;
-using System.Windows;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Threading.Tasks;
-using RenamerApp.WPFClasses;
-using System.Windows.Controls;
+﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using RenamerApp.WPFClasses;
 
 namespace RenamerApp
 {
-    class Operations
+    internal class Operations
     {
-        private ILogger Logger { get; }
         private readonly EditorWindow _window;
-        private WindowInputs WindowInputs { get; set; }
-        private string[] FilePaths { get; set; }
-        private int OpenHelpNum { get; set; }
 
         public Operations(EditorWindow window, ILogger logger)
         {
@@ -29,6 +25,11 @@ namespace RenamerApp
             _window.ResetUiButton.Click += ResetUi;
             _window.HelpButton.Click += ShowHelpText;
         }
+
+        private ILogger Logger { get; }
+        private WindowInputs WindowInputs { get; set; }
+        private string[] FilePaths { get; set; }
+        private int OpenHelpNum { get; set; }
 
         private async void StartOperation(object sender, RoutedEventArgs e)
         {
@@ -50,7 +51,7 @@ namespace RenamerApp
 
                 _window.StartButton.Click += ShowStopWindow;
                 WindowInputs.SetProgressBarMaxmimum(FilePaths.Length);
-                foreach (string file in FilePaths)
+                foreach (var file in FilePaths)
                 {
                     var fileInfo = new FileInputs(file)
                         {Copy = WindowInputs.CopyCheckBox, OutputDirectory = WindowInputs.OutputDirectory};
@@ -118,7 +119,7 @@ namespace RenamerApp
         private void SelectOutputFolder(object sender, RoutedEventArgs e)
         {
             var dialog = new CommonOpenFileDialog {IsFolderPicker = true};
-            CommonFileDialogResult result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result != CommonFileDialogResult.Ok) return;
             _window.OutputDirectoryInputBox.Text = dialog.FileName;
         }
@@ -142,10 +143,7 @@ namespace RenamerApp
             if (OpenHelpNum != 0) return;
             OpenHelpNum += 1;
             var helpList = new ListBox();
-            foreach (var text in TextArray.HelpText())
-            {
-                helpList.Items.Add(text);
-            }
+            foreach (var text in TextArray.HelpText()) helpList.Items.Add(text);
 
             var helpDialog = new EditorModalWindow(693, 383)
             {
@@ -183,6 +181,7 @@ namespace RenamerApp
         }
 
         private void SetOpenHelpNumToZero(object sender, EventArgs eventArgs) => OpenHelpNum = 0;
+
         private void EmergencyStopOperation(object sender, RoutedEventArgs e) => Process.GetCurrentProcess().Kill();
     }
 }

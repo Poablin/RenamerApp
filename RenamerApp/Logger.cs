@@ -3,21 +3,25 @@ using System.Windows.Controls;
 
 namespace RenamerApp
 {
-    class Logger : ILogger
+    internal class Logger : ILogger
     {
-        private ItemCollection Items { get; }
         public Logger(ItemCollection items)
         {
             Items = items;
         }
+
+        private ItemCollection Items { get; }
+
         public void Clear()
         {
             Items.Clear();
         }
+
         public void Log(string s)
         {
             Items.Add(s);
         }
+
         public void Log(Exception e)
         {
             Items.Add(e);

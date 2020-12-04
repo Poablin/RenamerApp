@@ -3,9 +3,8 @@ using System.Windows.Controls;
 
 namespace RenamerApp.WPFClasses
 {
-    class EditorCheckBox : CheckBox
+    internal class EditorCheckBox : CheckBox
     {
-
         public EditorCheckBox(int marginLeft, int marginTop, string content)
         {
             HorizontalAlignment = HorizontalAlignment.Left;

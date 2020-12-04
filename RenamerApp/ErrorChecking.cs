@@ -16,7 +16,7 @@
         public bool DirectoryExistsOrNot()
         {
             if (FileInfo.CheckIfDirectoryExistsOrSetDefault() != "N/A") return true;
-            Logger.Log("Directory does not exist - Please enter a valid path or empty for default.");
+            Logger.Log("Directory does not exist - Please enter a valid output path or empty for default.");
             return false;
         }
 

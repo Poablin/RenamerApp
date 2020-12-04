@@ -67,7 +67,7 @@ namespace RenamerApp
                     fileNameEditor.UpperCase(WindowInputs.UppercaseCheckBox);
                     Logger.Log(fileInfo.LogStartProcessing);
                     //Forskjellig error checking
-                    if (errorChecking.DirectoryExistsOrNot() == false) continue;
+                    if (errorChecking.DirectoryExistsOrNot() == false) break;
                     if (errorChecking.FileExistsAndCopyEnabledAndDirectoryDefault() == false) continue;
                     if (errorChecking.FileExistsAndOverwriteNotChecked() == false) continue;
                     errorChecking.FileExistsAndOverwriteChecked();

@@ -48,7 +48,6 @@ namespace RenamerApp
 
                 WindowInputs.SetProgressBarPercentage(true);
                 Logger.Log("Starting operation - Please wait");
-
                 _window.StartButton.Click += ShowStopWindow;
                 WindowInputs.SetProgressBarMaxmimum(FilePaths.Length);
                 foreach (var file in FilePaths)

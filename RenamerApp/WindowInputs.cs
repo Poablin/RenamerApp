@@ -56,7 +56,12 @@ namespace RenamerApp
 
         public void SetProgressBarPercentage(bool started)
         {
-            if (started == false) Window.ProgressBarPercentageText.Text = "";
+            if (started == false)
+            {
+                Window.ProgressBarPercentageText.Text = "";
+                return;
+            }
+
             Window.ProgressBarPercentageText.Text =
                 Convert.ToString(Math.Round(Window.ProgressBar.Value / Window.ProgressBar.Maximum * 100)) + "%";
         }

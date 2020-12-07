@@ -12,8 +12,8 @@ namespace RenamerApp.WPFClasses
 
             Grid.Children.Add(InformationList = new EditorInformationList {ContextMenu = Context});
             Grid.Children.Add(OutputDirectoryInputBox = new EditorTextBox("Output Path", 0, 200, 150, 20));
-            Grid.Children.Add(SpecificStringReplaceThisInputBox = new EditorTextBox("", 0, 50, 80, 50));
-            Grid.Children.Add(SpecificStringReplaceWithInputBox = new EditorTextBox("", 0, 50, 162, 50));
+            Grid.Children.Add(SpecificStringReplaceThisInputBox = new EditorTextBox("This", 0, 50, 80, 50));
+            Grid.Children.Add(SpecificStringReplaceWithInputBox = new EditorTextBox("With", 0, 50, 162, 50));
             Grid.Children.Add(FromIndexInputBox = new EditorTextBox("", 2, 20, 150, 70));
             Grid.Children.Add(ToIndexInputBox = new EditorTextBox("", 2, 20, 190, 70));
             Grid.Children.Add(CopyCheckBox = new EditorCheckBox(370, 0, "Copy files"));

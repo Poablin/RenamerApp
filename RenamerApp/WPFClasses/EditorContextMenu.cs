@@ -9,6 +9,6 @@ namespace RenamerApp.WPFClasses
             Items.Add(ContextItem1);
         }
 
-        public MenuItem ContextItem1 { get; } = new MenuItem {Header = "Copy Text"};
+        public MenuItem ContextItem1 { get; } = new MenuItem { Header = "Copy Text" };
     }
 }

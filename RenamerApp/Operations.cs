@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using RenamerApp.WPFClasses;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using RenamerApp.WPFClasses;
 
 namespace RenamerApp
 {
@@ -53,7 +53,7 @@ namespace RenamerApp
                 foreach (var file in FilePaths)
                 {
                     var fileInfo = new FileInputs(file)
-                        {Copy = WindowInputs.CopyCheckBox, OutputDirectory = WindowInputs.OutputDirectory};
+                    { Copy = WindowInputs.CopyCheckBox, OutputDirectory = WindowInputs.OutputDirectory };
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     var errorChecking = new ErrorChecking(fileInfo, WindowInputs, Logger);
                     //Under kan endres hva som skjer med navnet
@@ -72,7 +72,7 @@ namespace RenamerApp
                     errorChecking.FileExistsAndOverwriteChecked();
                     //Output ting her nede
                     await CopyOrMoveFilesAsync(fileInfo.OutputDirectory, fileInfo, WindowInputs.CopyCheckBox,
-                        (bool) WindowInputs.OverwriteCheckBox);
+                        (bool)WindowInputs.OverwriteCheckBox);
                     WindowInputs.IncrementProgressBar();
                     Logger.Log(fileInfo.LogFinishedProcessing);
                 }
@@ -109,7 +109,7 @@ namespace RenamerApp
 
         private void SelectFiles(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog {Multiselect = true};
+            var openFileDialog = new OpenFileDialog { Multiselect = true };
             if (openFileDialog.ShowDialog() != true) return;
             FilePaths = openFileDialog.FileNames;
             _window.SelectedFilesText.Text = $"Selected {FilePaths.Length} {(FilePaths.Length < 2 ? "File" : "Files")}";
@@ -117,7 +117,7 @@ namespace RenamerApp
 
         private void SelectOutputFolder(object sender, RoutedEventArgs e)
         {
-            var dialog = new CommonOpenFileDialog {IsFolderPicker = true};
+            var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             var result = dialog.ShowDialog();
             if (result != CommonFileDialogResult.Ok) return;
             _window.OutputDirectoryInputBox.Text = dialog.FileName;

@@ -1,5 +1,5 @@
-﻿using System;
-using RenamerApp.WPFClasses;
+﻿using RenamerApp.WPFClasses;
+using System;
 
 namespace RenamerApp
 {
@@ -9,7 +9,7 @@ namespace RenamerApp
         {
             Window = window;
             OutputDirectory = Window.OutputDirectoryInputBox.Text;
-            StartButton = (string) Window.StartButton.Content;
+            StartButton = (string)Window.StartButton.Content;
             SelectedFiles = Window.SelectedFilesText.Text;
             SpecificStringThis = Window.SpecificStringReplaceThisInputBox.Text;
             SpecificStringWith = Window.SpecificStringReplaceWithInputBox.Text;

@@ -1,5 +1,5 @@
-﻿using System;
-using RenamerApp.WPFClasses;
+﻿using RenamerApp.WPFClasses;
+using System;
 
 namespace RenamerApp
 {

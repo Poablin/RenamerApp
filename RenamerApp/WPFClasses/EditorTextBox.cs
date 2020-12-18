@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using Gu.Wpf.Adorners;
+using System.Windows;
 using System.Windows.Controls;
-using Gu.Wpf.Adorners;
 
 namespace RenamerApp.WPFClasses
 {

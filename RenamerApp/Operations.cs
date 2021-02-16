@@ -57,6 +57,7 @@ namespace RenamerApp
                     var fileNameEditor = new FileNameEditor(fileInfo);
                     var errorChecking = new ErrorChecking(fileInfo, WindowInputs, Logger);
                     //Under kan endres hva som skjer med navnet
+
                     if (WindowInputs.SpecificStringThis != "")
                         fileNameEditor.ReplaceSpecificString(WindowInputs.SpecificStringThis,
                             WindowInputs.SpecificStringWith);
@@ -66,11 +67,13 @@ namespace RenamerApp
                     fileNameEditor.UpperCase(WindowInputs.UppercaseCheckBox);
                     Logger.Log(fileInfo.LogStartProcessing);
                     //Forskjellig error checking
+
                     if (errorChecking.DirectoryExistsOrNot() == false) break;
                     if (errorChecking.FileExistsAndCopyEnabledAndDirectoryDefault() == false) continue;
                     if (errorChecking.FileExistsAndOverwriteNotChecked() == false) continue;
                     errorChecking.FileExistsAndOverwriteChecked();
                     //Output ting her nede
+
                     await CopyOrMoveFilesAsync(fileInfo.OutputDirectory, fileInfo, WindowInputs.CopyCheckBox,
                         (bool)WindowInputs.OverwriteCheckBox);
                     WindowInputs.IncrementProgressBar();
